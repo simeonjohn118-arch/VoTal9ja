@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote for {{ contestant.full_name }} | VoTal9ja</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b132b;
+            --navy: #1d3557;
+            --red: #E63946;
+            --gold: #FFD700;
+            --white: #f1faee;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top right, #1d3557, #0b132b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            padding: 20px;
+        }
+
+        /* DIGITAL FRAME STRUCTURE RESTORED */
+        .template-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            background: rgba(29, 53, 87, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* BACK BUTTON STYLING */
+        .back-nav {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .back-nav:hover { opacity: 1; transform: translateX(-3px); }
+
+        .image-frame {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px;
+            border: 3px solid var(--gold);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 214, 0, 0.2);
+        }
+
+        .image-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .contestant-badge {
+            background: var(--red);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        h2 { font-size: 1.6rem; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+
+        .input-group { text-align: left; margin-bottom: 15px; }
+        .input-group label { font-size: 0.7rem; color: var(--gold); margin-left: 10px; text-transform: uppercase; font-weight: bold; }
+
+        .input-style {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-style[readonly] {
+            background: rgba(69, 123, 157, 0.2);
+            border-color: #457b9d;
+            cursor: not-allowed;
+            color: #ccc;
+        }
+
+        .calc-display {
+            background: rgba(230, 57, 70, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed var(--red);
+            margin: 5px 0 15px 0;
+        }
+
+        .calc-display span { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+
+        .pay-btn {
+            width: 100%;
+            background: var(--red);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.4s;
+            text-transform: uppercase;
+        }
+
+        /* NEW: PAYMENT DISPLAY STYLING */
+        #paymentArea {
+            display: none; /* Hidden by default */
+            padding: 20px;
+            background: rgba(255,215,0,0.05);
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+            margin-top: 10px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .acc-number {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 3px;
+            margin: 15px 0;
+            display: block;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="template-wrapper">
+        <a href="/" class="back-nav"><i class="fas fa-arrow-left"></i></a>
+
+        <div class="contestant-badge">OFFICIAL VOTING PORTAL</div>
+        
+        <div class="image-frame">
+            <img src="{{ url_for('static', filename='uploads/' + contestant.profile_pic) if contestant.profile_pic else 'https://via.placeholder.com/200' }}" alt="Profile">
+        </div>
+
+        <h2>Support Your Icon</h2>
+
+        <div id="formArea">
+            <div class="input-group">
+                <label>You are voting for:</label>
+                <input type="text" class="input-style" value="{{ contestant.full_name }} (#{{ contestant.id }})" readonly>
+            </div>
+
+            <div class="input-group">
+                <label>Enter Amount to Pay (₦)</label>
+                <input type="number" id="amountInput" class="input-style" placeholder="1 Vote = ₦50" min="50" step="50">
+            </div>
+
+            <div class="calc-display">
+                Total Votes: <span id="voteCount">0</span>
+            </div>
+
+            <button type="button" class="pay-btn" onclick="generatePayment()">
+                <i class="fas fa-credit-card"></i> PROCEED TO PAYMENT
+            </button>
+        </div>
+
+        <div id="paymentArea">
+            <h3 style="color: var(--gold); margin-bottom: 10px;">Transfer Instructions</h3>
+            <p style="font-size: 0.85rem;">Transfer <strong>₦<span id="finalAmt"></span></strong> to:</p>
+            
+            <span class="acc-number" id="displayAcc">Loading...</span>
+            
+            <p style="margin-bottom: 5px;">Bank: <strong id="displayBank">OPAY</strong></p>
+            <p>Name: <strong>VoTal9ja Contest</strong></p>
+
+            <div style="background: var(--red); color: white; padding: 10px; border-radius: 8px; margin: 15px 0; font-size: 0.75rem;">
+                USE NARRATION: <strong>VT{{ contestant.id }}</strong>
+            </div>
+
+            <button onclick="location.reload()" class="pay-btn" style="background: var(--navy);">I HAVE PAID</button>
+        </div>
+
+        <p style="font-size: 0.65rem; margin-top: 20px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px;">
+            Admin will verify your payment against this contestant's ID.
+        </p>
+    </div>
+
+    <script>
+        // YOUR THREE ACCOUNT NUMBERS
+        const accountList = [
+            { number: "8123456781", bank: "OPAY (Account 1)" },
+            { number: "7012345672", bank: "OPAY (Account 2)" },
+            { number: "9012345673", bank: "OPAY (Account 3)" }
+        ];
+
+        const amountInput = document.getElementById('amountInput');
+        const voteCount = document.getElementById('voteCount');
+
+        amountInput.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            voteCount.innerText = (val >= 50) ? Math.floor(val / 50) : 0;
+        });
+
+        function generatePayment() {
+            const amount = amountInput.value;
+            if (amount < 50) {
+                alert("Minimum voting amount is ₦50.");
+                return;
+            }
+
+            // Pick a random account from the 3
+            const selected = accountList[Math.floor(Math.random() * accountList.length)];
+
+            // Fill the details
+            document.getElementById('finalAmt').innerText = amount;
+            document.getElementById('displayAcc').innerText = selected.number;
+            document.getElementById('displayBank').innerText = selected.bank;
+
+            // Switch views
+            document.getElementById('formArea').style.display = 'none';
+            document.getElementById('paymentArea').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

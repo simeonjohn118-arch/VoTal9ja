@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Vault | VoTal9ja Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b132b;
+            --card-bg: rgba(29, 53, 87, 0.4);
+            --red: #E63946;
+            --green: #2a9d8f;
+            --text-gold: #f1faee;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top right, #1d3557, #0b132b);
+            color: var(--text-gold);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1100px; margin: auto; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--glass);
+            padding-bottom: 20px;
+        }
+
+        .header h1 { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; color: var(--red); }
+
+        .back-btn {
+            color: var(--text-gold);
+            text-decoration: none;
+            font-size: 0.8rem;
+            background: var(--glass);
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: var(--red); }
+
+        /* Verification Table */
+        .vault-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass);
+            border-radius: 20px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; padding: 15px; color: rgba(241, 250, 238, 0.6); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 15px; border-bottom: 1px solid var(--glass); font-size: 0.9rem; }
+
+        .receipt-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid var(--glass);
+            transition: 0.3s;
+        }
+        .receipt-img:hover { transform: scale(1.1); border-color: var(--red); }
+
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-right: 5px;
+            transition: 0.3s;
+        }
+        .btn-approve { background: var(--green); color: white; }
+        .btn-reject { background: var(--red); color: white; }
+        .btn-action:hover { opacity: 0.8; letter-spacing: 1px; }
+
+        /* Image Zoom Overlay */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        #overlay img { max-width: 90%; max-height: 90%; border: 3px solid white; border-radius: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-fingerprint"></i> Voting Vault</h1>
+            <a href="{{ url_for('admin_master') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Console</a>
+        </div>
+
+        <div class="vault-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Receipt</th>
+                        <th>Transaction ID</th>
+                        <th>Contestant</th>
+                        <th>Time Uploaded</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in receipts %}
+                    <tr>
+                        <td>
+                            <img src="{{ url_for('static', filename='receipts/' + receipt.image_path) }}" 
+                                 class="receipt-img" 
+                                 onclick="zoomImage(this.src)">
+                        </td>
+                        <td style="font-family: monospace; color: #ffb703;">{{ receipt.transaction_id }}</td>
+                        <td>Contestant #{{ receipt.contestant_id }}</td>
+                        <td style="font-size: 0.7rem; color: gray;">2026-04-28</td>
+                        <td>
+                            <button class="btn-action btn-approve" onclick="updateStatus('{{ receipt.id }}', 'Approved')">Verify</button>
+<button class="btn-action btn-reject" onclick="updateStatus('{{ receipt.id }}', 'Rejected')">Decline</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 50px; color: rgba(255,255,255,0.2);">
+                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                            <p>No pending receipts in the vault.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="this.style.display='none'">
+        <img id="zoomedImg" src="">
+    </div>
+
+    <script>
+        function zoomImage(src) {
+            document.getElementById('zoomedImg').src = src;
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function updateStatus(receiptId, status) {
+            if(confirm(`Are you sure you want to ${status} this vote?`)) {
+                fetch('/admin/update-receipt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `receipt_id=${receiptId}&status=${status}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        location.reload();
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

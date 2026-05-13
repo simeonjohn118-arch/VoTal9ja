@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | VoTal9ja</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #E63946;
+            --navy: #1d3557;
+            --overlay: rgba(255, 255, 255, 0.9);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, var(--navy) 0%, #457b9d 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Glassmorphism Card */
+        .login-card {
+            background: var(--overlay);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 420px;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--navy));
+        }
+
+        .brand-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 10px;
+            text-transform: unset;
+            letter-spacing: 1px;
+        }
+
+        .brand-logo span { color: var(--primary); }
+
+        h2 { color: #333; font-size: 1.4rem; margin-bottom: 30px; font-weight: 600; }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            color: #888;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--navy);
+            font-weight: 600;
+            padding-left: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            outline: none;
+            transition: 0.3s;
+            background: #fff;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(29, 53, 87, 0.3);
+        }
+
+        .btn-login:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+        }
+
+        .footer-links {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .footer-links a {
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-links a:hover { color: var(--primary); }
+
+        /* Flash Message Styling */
+        .flash-msg {
+            padding: 10px;
+            background: #ffe3e5;
+            color: var(--primary);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+       <div class="brand-logo">
+    <img src="static/image/logo 2.jpg" alt="" style="height: 30px; width: auto; vertical-align: middle;">
+</div>
+        <h2>Competitor Login</h2>
+
+              <div class="flash-msg">{{ message }}</div>
+            
+
+        <form action="/login" method="POST">
+            <div class="input-group">
+                <label>Email Address</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" placeholder="Enter your registered email" required>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 10px;">
+                <label>Secure Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            
+            <div style="text-align: right; margin-bottom: 25px;">
+                <a href="#" style="font-size: 0.8rem; color: #888; text-decoration: none;">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">
+                Access Dashboard <i class="fas fa-sign-in-alt" style="margin-left: 8px;"></i>
+            </button>
+        </form>
+
+        <div class="footer-links">
+            New to the competition? <a href="/">Register Now</a>
+        </div>
+    </div>
+
+</body>
+</html>

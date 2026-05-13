@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | Master Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #050a18;
+            --bg-glow: #1d3557;
+            --accent-red: #E63946;
+            --safety-green: #32cd32;
+            --warning-gold: #FFD700;
+            --ice-blue: #a8dadc;
+            --pure-white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at center, var(--bg-glow), var(--bg-deep));
+            color: var(--pure-white);
+            min-height: 100vh;
+            padding: 40px 5%;
+        }
+
+        .header { margin-bottom: 40px; border-left: 5px solid var(--accent-red); padding-left: 20px; }
+        .header h1 { font-size: 2rem; letter-spacing: 3px; text-transform: uppercase; }
+        .header p { color: var(--ice-blue); font-size: 0.85rem; }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .control-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--ice-blue);
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        /* Toggle Switches */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--accent-red); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* Tables for Blocking */
+        .block-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .btn-block {
+            padding: 5px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--accent-red);
+            background: transparent;
+            color: var(--accent-red);
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-block:hover { background: var(--accent-red); color: white; }
+        .btn-blocked { background: var(--accent-red); color: white; }
+
+        /* Branding / Status Footer */
+        .status-footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--ice-blue);
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Master Control Center</h1>
+        <p>Administrative Overrides & Security Protocols</p>
+    </div>
+
+    <div class="control-grid">
+        
+        <!-- Global System Locks -->
+        <div class="control-card">
+            <div class="card-title"><i class="fa-solid fa-gears"></i> Global Systems</div>
+            
+            <div class="setting-row">
+                <div>
+                    <span>Contestant Registration</span>
+                    <p style="font-size: 0.7rem; color: var(--ice-blue);">Enable/Disable new signups</p>
+                </div>
+                <label class="switch">
+                    <!-- Key updated to registration_open to match app.py -->
+                    <input type="checkbox" {% if system.registration_open %}checked{% endif %} onchange="updateSystem('registration_open', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <span>Contestant Login Portal</span>
+                    <p style="font-size: 0.7rem; color: var(--ice-blue);">Allow contestants to access accounts</p>
+                </div>
+                <label class="switch">
+                    <!-- Key updated to contestant_login_active to match app.py -->
+                    <input type="checkbox" {% if system.contestant_login_active %}checked{% endif %} onchange="updateSystem('contestant_login_active', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <span>Maintenance Mode</span>
+                    <p style="font-size: 0.7rem; color: var(--accent-red);">Redirect entire site to "Under Construction"</p>
+                </div>
+                <label class="switch">
+                    <!-- Key updated to maintenance_mode to match app.py -->
+                    <input type="checkbox" {% if system.maintenance_mode %}checked{% endif %} onchange="updateSystem('maintenance_mode', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Admin Management -->
+        <div class="control-card">
+            <div class="card-title"><i class="fa-solid fa-user-shield"></i> Admin Access (Sack/Block)</div>
+            <p style="font-size: 0.7rem; margin-bottom: 15px;">Revoke master site access from sub-admins.</p>
+            <div class="block-list">
+                {% for admin in admins %}
+                <div class="user-item">
+                    <span>{{ admin.name }} <small style="color: var(--ice-blue);">({{ admin.role }})</small></span>
+                    <button class="btn-block {% if admin.blocked %}btn-blocked{% endif %}" onclick="toggleUser('admin', '{{ admin.id }}', this)">
+                        {% if admin.blocked %}UNBLOCK{% else %}BLOCK / SACK{% endif %}
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Contestant Discipline -->
+        <div class="control-card">
+            <div class="card-title"><i class="fa-solid fa-user-slash"></i> Contestant Ban-Hammer</div>
+            <p style="font-size: 0.7rem; margin-bottom: 15px;">Instantly terminate a contestant's session and login rights.</p>
+            <div class="block-list">
+                {% for c in contestants %}
+                <div class="user-item">
+                    <span>{{ c.name }}</span>
+                    <button class="btn-block {% if c.blocked %}btn-blocked{% endif %}" onclick="toggleUser('contestant', '{{ c.id }}', this)">
+                        {% if c.blocked %}UNBAN{% else %}BAN USER{% endif %}
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Site Preferences -->
+        <div class="control-card">
+            <div class="card-title"><i class="fa-solid fa-palette"></i> Site Identity</div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="font-size: 0.7rem; display: block; color: var(--ice-blue);">SYSTEM NOTIFICATION BAR</label>
+                <input type="text" id="announcement_text" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--border); padding:10px; color:white; border-radius:5px; margin-top:5px;" placeholder="e.g., Voting ends in 2 hours!">
+            </div>
+            <button class="btn-block" style="width: 100%; border-color: var(--ice-blue); color: var(--ice-blue);" onclick="updateAnnouncement()">UPDATE SITE-WIDE ANNOUNCEMENT</button>
+        </div>
+
+    </div>
+
+    <div class="status-footer">
+        [ SYSTEM LOGS: ALL PROTOCOLS NOMINAL ]
+    </div>
+
+    <script>
+        function updateSystem(action, status) {
+            console.log(`Command Sent: ${action} set to ${status}`);
+            
+            fetch('/admin/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action, status: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Server state updated successfully.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function toggleUser(type, id, btn) {
+            const isBlocking = btn.innerText.includes("BLOCK") || btn.innerText.includes("BAN");
+            const confirmMsg = isBlocking ? `Confirm suspension of this ${type}?` : `Reactivate this ${type}?`;
+            
+            if (confirm(confirmMsg)) {
+                btn.classList.toggle('btn-blocked');
+                btn.innerText = isBlocking ? (type === 'admin' ? "UNBLOCK" : "UNBAN") : (type === 'admin' ? "BLOCK / SACK" : "BAN USER");
+                
+                // Sending the toggle command to the same settings endpoint
+                updateSystem(`toggle_${type}`, { id: id, blocked: isBlocking });
+            }
+        }
+
+        function updateAnnouncement() {
+            const text = document.getElementById('announcement_text').value;
+            updateSystem('site_announcement', text);
+            alert("Announcement updated across all nodes.");
+        }
+    </script>
+</body>
+</html>

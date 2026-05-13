@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Command | VoTal9ja</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* VoTal9ja Branding */
+        :root {
+            --bg: #0b132b;
+            --card-bg: rgba(29, 53, 87, 0.4);
+            --navy: #1d3557;
+            --red: #E63946;
+            --accent: #457b9d;
+            --text-gold: #f1faee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top right, #1d3557, #0b132b);
+            color: var(--text-gold);
+            min-height: 100vh;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 {
+            font-size: 2rem; letter-spacing: 4px; text-transform: uppercase;
+            color: var(--red); text-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+        }
+        .header p { color: var(--accent); font-size: 0.8rem; margin-top: 5px; font-weight: 600; }
+
+        .master-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, 160px);
+            gap: 25px;
+            max-width: 1000px;
+            justify-content: center;
+        }
+
+        .catalog-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            height: 160px; width: 160px;
+            border-radius: 20px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative; overflow: hidden;
+        }
+
+        .catalog-box:hover {
+            transform: translateY(-10px);
+            background: rgba(230, 57, 70, 0.1);
+            border-color: var(--red);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+
+        .catalog-box i { font-size: 2.5rem; color: var(--text-gold); margin-bottom: 12px; transition: 0.3s; }
+        .catalog-box:hover i { color: var(--red); transform: scale(1.1); }
+        .catalog-box span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(241, 250, 238, 0.7); }
+
+        .status-dot {
+            position: absolute; top: 15px; right: 15px;
+            width: 8px; height: 8px; background: #ffb703;
+            border-radius: 50%; box-shadow: 0 0 10px #ffb703;
+        }
+
+        /* Glass Modal */
+        #gatekeeper-modal {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 19, 43, 0.95);
+            z-index: 1000; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--navy); padding: 40px; border-radius: 25px;
+            text-align: center; width: 350px; border: 1px solid var(--red);
+            box-shadow: 0 0 50px rgba(230, 57, 70, 0.2);
+        }
+
+        .modal-content input {
+            width: 100%; padding: 15px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            color: white; text-align: center; font-size: 1.1rem;
+            margin-bottom: 20px; outline: none;
+        }
+
+        .modal-content input:focus { border-color: var(--red); }
+
+        .unlock-btn {
+            background: var(--red); color: white; border: none;
+            padding: 15px; border-radius: 12px; font-weight: bold;
+            cursor: pointer; width: 100%; transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .unlock-btn:hover { letter-spacing: 2px; box-shadow: 0 0 20px var(--red); }
+
+        #auth-status {
+            margin-top: 15px; min-height: 25px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .status-error { color: #E63946; text-shadow: 0 0 8px rgba(230, 57, 70, 0.6); animation: blink 0.5s infinite alternate; }
+        .status-process { color: #457b9d; }
+
+        @keyframes blink { from { opacity: 1; } to { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Master Console</h1>
+        <p>VoTal9ja Security & Management</p>
+    </div>
+
+    <div class="master-grid">
+        <div class="catalog-box" onclick="openGate('verification')">
+            <div class="status-dot"></div>
+            <i class="fas fa-fingerprint"></i>
+            <span>Voting Vault</span>
+        </div>
+
+        <div class="catalog-box" onclick="openGate('contestants')">
+            <div class="status-dot"></div>
+            <i class="fas fa-id-badge"></i>
+            <span>Registry</span>
+        </div>
+
+        <div class="catalog-box" onclick="openGate('media')">
+            <div class="status-dot"></div>
+            <i class="fas fa-photo-video"></i>
+            <span>Media Hub</span>
+        </div>
+
+        <div class="catalog-box" onclick="openGate('finance')">
+            <div class="status-dot"></div>
+            <i class="fas fa-chart-pie"></i>
+            <span>Financials</span>
+        </div>
+
+        <div class="catalog-box" onclick="openGate('settings')">
+            <div class="status-dot"></div>
+            <i class="fas fa-terminal"></i>
+            <span>System Logs</span>
+        </div>
+
+        <div class="catalog-box" onclick="openGate('broadcast')">
+            <div class="status-dot"></div>
+            <i class="fas fa-satellite-dish"></i>
+            <span>Broadcast</span>
+        </div>
+        <div class="catalog-box" onclick="openGate('staff')">
+    <div class="status-dot"></div>
+    <i class="fas fa-users-cog"></i>
+    <span>Personnel</span>
+</div>
+    </div>
+
+    <div id="gatekeeper-modal">
+        <div class="modal-content">
+            <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--red); margin-bottom: 15px;"></i>
+            <h3 id="catalog-name">Authentication</h3>
+            
+            <div id="auth-status"></div>
+
+            <input type="password" id="catalog-key" placeholder="Enter Catalog Key">
+            <button class="unlock-btn" onclick="verifyKey()">Authorize Access</button>
+            <p onclick="closeModal()" style="margin-top:20px; color:rgba(255,255,255,0.4); cursor:pointer; font-size: 0.8rem;">Cancel Access</p>
+        </div>
+    </div>
+
+
+   <script>
+    let currentCatalog = ""; 
+    let activeCatalog = ""; // Added to support your submitPasskey function
+
+    function openGate(catalog) {
+        currentCatalog = catalog;
+        activeCatalog = catalog; // Syncing both variables
+        document.getElementById('catalog-name').innerText = catalog.toUpperCase() + " SECURE ACCESS";
+        document.getElementById('gatekeeper-modal').style.display = 'flex';
+        document.getElementById('auth-status').innerHTML = ""; 
+        document.getElementById('catalog-key').focus();
+    }
+
+    function closeModal() { 
+        document.getElementById('gatekeeper-modal').style.display = 'none'; 
+        document.getElementById('catalog-key').value = ""; 
+    }
+
+    // Keypress listener for 'Enter' key
+    document.getElementById('catalog-key').addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            verifyKey();
+        }
+    });
+
+    // Function 1: Updated to send JSON to match your Python backend
+    function verifyKey() {
+    const keyInput = document.getElementById('catalog-key');
+    const statusDiv = document.getElementById('auth-status');
+    const key = keyInput.value;
+    
+    if (!key) {
+        statusDiv.innerHTML = "<span style='color:red'>Key Required</span>";
+        return;
+    }
+
+    // FORCE LOWERCASE: This ensures 'Verification' becomes 'verification'
+    // to match your 'unlocked_verification' session check.
+    const cleanCatalogName = currentCatalog.toLowerCase().trim();
+
+    statusDiv.innerHTML = "<span>Verifying Credentials...</span>";
+
+    fetch("/admin/unlock", {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            catalog: cleanCatalogName, 
+            key: key
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            statusDiv.innerHTML = "<span style='color:green'>Access Granted! Opening...</span>";
+            
+            // We use a small delay to allow the browser to write the cookie
+            setTimeout(() => {
+                window.location.href = data.redirect;
+            }, 150); 
+        } else {
+            statusDiv.innerHTML = `<span style='color:red'>${data.message}</span>`;
+            keyInput.value = "";
+        }
+    })
+    .catch(err => {
+        console.error("Redirect Error:", err);
+        statusDiv.innerHTML = "<span style='color:red'>Link Failure</span>";
+    });
+}
+    // Function 2: Keeping your existing submitPasskey function as requested
+    function submitPasskey() {
+        const keyInput = document.getElementById('passkeyInput');
+        // If passkeyInput doesn't exist in modal, we fallback to catalog-key
+        const inputSource = keyInput ? keyInput : document.getElementById('catalog-key');
+        const key = inputSource.value;
+
+        fetch("/admin/unlock", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ 
+                catalog: activeCatalog, 
+                key: key 
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Server returned ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.message);
+                inputSource.value = "";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("System Error: " + error.message);
+        });
+    }
+</script>
+</body>
+</html>

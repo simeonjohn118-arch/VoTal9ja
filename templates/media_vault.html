@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | Media Vault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* VoTal9ja Branding Core */
+        :root {
+            --bg: #0b132b;
+            --card-bg: rgba(29, 53, 87, 0.5);
+            --navy: #1d3557;
+            --red: #E63946;
+            --ice: #a8dadc;
+            --pure-white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top right, #1d3557, #050a18);
+            color: var(--pure-white);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 {
+            font-size: 2.2rem; letter-spacing: 5px; text-transform: uppercase;
+            color: var(--pure-white); 
+            text-shadow: 0 0 20px rgba(230, 57, 70, 0.7);
+        }
+        .header p { color: var(--ice); font-size: 0.85rem; margin-top: 8px; font-weight: 700; letter-spacing: 2px; }
+
+        /* Media Grid System */
+        .media-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .media-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .media-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--ice);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Preview Area */
+        .preview-box {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .preview-box video, .preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .audio-placeholder {
+            text-align: center;
+            color: var(--ice);
+        }
+
+        .audio-placeholder i { font-size: 3rem; margin-bottom: 10px; display: block; }
+
+        /* Card Details */
+        .media-info {
+            padding: 20px;
+            background: rgba(11, 19, 43, 0.6);
+        }
+
+        .contestant-name {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--pure-white);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .file-meta {
+            font-size: 0.75rem;
+            color: var(--ice);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Audio Player Styling */
+        audio {
+            width: 100%;
+            height: 35px;
+            margin-top: 10px;
+            filter: invert(100%) hue-rotate(180deg) brightness(1.5);
+        }
+
+        /* Action Buttons */
+        .media-actions {
+            display: flex;
+            padding: 15px 20px;
+            gap: 10px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .votal-btn {
+            flex: 1;
+            background: transparent;
+            color: white;
+            border: 1px solid var(--ice);
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.7rem;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .votal-btn:hover { background: var(--ice); color: var(--bg); }
+        .btn-red { border-color: var(--red); color: var(--red); }
+        .btn-red:hover { background: var(--red); color: white; }
+
+        /* Empty State */
+        .empty-vault {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 100px;
+            opacity: 0.5;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Inside the Ledger Section of your HTML -->
+<div class="ledger-section">
+    <!-- Registration Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3>Contestant Registrations</h3>
+            <i class="fa-solid fa-users-gear" style="color: var(--paystack-blue);"></i>
+        </div>
+        
+        {% if registrations %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Contestant</th>
+                    <th>Amount</th>
+                    <th>Channel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reg in registrations %}
+                <tr>
+                    <td>{{ reg.id }}</td>
+                    <td>{{ reg.contestant }}</td>
+                    <td>₦{{ "{:,.0f}".format(reg.amount) }}</td>
+                    <td><span class="tag tag-ps">PAYSTACK</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: var(--text-dim); border: 1px dashed var(--border); border-radius: 10px;">
+            <i class="fa-solid fa-hourglass-start" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+            <p>SYSTEM STANDBY: No registrations detected yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Revenue Audit -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3>Revenue Audit</h3>
+            <i class="fa-solid fa-chart-line" style="color: var(--accent-red);"></i>
+        </div>
+        <div style="padding: 10px 0;">
+            <div style="margin-bottom: 15px;">
+                <small>Registration Count</small>
+                <p style="font-weight: bold; font-size: 1.2rem;">{{ registrations|length }}</p>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <small>Live Vote Count</small>
+                <p style="font-weight: bold; font-size: 1.2rem; color: var(--opay-green);">{{ total_votes_count }}</p>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+            <p style="font-size: 0.75rem; text-align: center; color: var(--text-dim); font-style: italic;">
+                Audit engine is active and monitoring incoming payloads.
+            </p>
+        </div>
+    </div>
+</div>
+
+    <script>
+        function deleteMedia(id) {
+            if(confirm("PERMANENTLY DELETE THIS MEDIA FROM THE SERVER?")) {
+                fetch(`/admin/delete_media/${id}`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) location.reload();
+                });
+            }
+        }
+    </script>
+</body>
+</html>

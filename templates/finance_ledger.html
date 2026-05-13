@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | Financial Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #050a18;
+            --bg-glow: #1d3557;
+            --accent-red: #E63946;
+            --paystack-blue: #00bbff;
+            --opay-green: #32cd32;
+            --text-main: #f1faee;
+            --text-dim: #a8dadc;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        body {
+            background: radial-gradient(circle at center, var(--bg-glow), var(--bg-deep));
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 5%;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: left;
+            margin-bottom: 50px;
+            border-left: 5px solid var(--accent-red);
+            padding-left: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+
+        .header p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 15px;
+        }
+
+        .card .amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .card .details {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Specific Card Styles */
+        .reg-card { border-top: 4px solid var(--paystack-blue); }
+        .vote-card { border-top: 4px solid var(--opay-green); }
+        .total-card { 
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.2), transparent);
+            border: 1px solid var(--accent-red);
+        }
+
+        /* Data Tables */
+        .ledger-section {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1000px) {
+            .ledger-section { grid-template-columns: 1fr; }
+        }
+
+        .table-container {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: var(--text-dim); font-size: 0.8rem; padding: 12px; text-transform: uppercase; }
+        td { padding: 15px 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+
+        .tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .tag-ps { background: rgba(0, 187, 255, 0.1); color: var(--paystack-blue); border: 1px solid var(--paystack-blue); }
+        .tag-op { background: rgba(50, 205, 50, 0.1); color: var(--opay-green); border: 1px solid var(--opay-green); }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-glow); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Financial Ledger</h1>
+        <p>VoTal9ja Real-Time Revenue Audit • April 2026</p>
+    </div>
+
+    <!-- Top Stats -->
+    <div class="summary-grid">
+        <div class="card reg-card">
+            <h3>Registration Revenue</h3>
+            <div class="amount">₦{{ "{:,.2f}".format(total_reg) }}</div>
+            <div class="details" style="color: var(--paystack-blue);">
+                <i class="fa-brands fa-stripe-s"></i> PAYSTACK | ₦10,000 PER ENTRY
+            </div>
+        </div>
+
+        <div class="card vote-card">
+            <h3>Voting Revenue</h3>
+            <div class="amount">₦{{ "{:,.2f}".format(total_votes_revenue) }}</div>
+            <div class="details" style="color: var(--opay-green);">
+                <i class="fa-solid fa-bolt"></i> OPAY | {{ total_votes_count }} VOTES × ₦50
+            </div>
+        </div>
+
+        <div class="card total-card">
+            <h3>Ground Total</h3>
+            <div class="amount" style="color: var(--accent-red);">₦{{ "{:,.2f}".format(ground_total) }}</div>
+            <div class="details">
+                <i class="fa-solid fa-shield-halved"></i> CONSOLIDATED BALANCE
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Breakdowns -->
+    <div class="ledger-section">
+        <!-- Registration Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Contestant Registrations</h3>
+                <i class="fa-solid fa-users-gear" style="color: var(--paystack-blue);"></i>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Contestant</th>
+                        <th>Amount</th>
+                        <th>Channel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in registrations %}
+                    <tr>
+                        <td style="font-family: monospace;">{{ reg.id }}</td>
+                        <td>{{ reg.contestant }}</td>
+                        <td>₦{{ "{:,.0f}".format(reg.amount) }}</td>
+                        <td><span class="tag tag-ps">PAYSTACK</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Audit Log Summary -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Revenue Audit</h3>
+                <i class="fa-solid fa-chart-line" style="color: var(--accent-red);"></i>
+            </div>
+            <div style="padding: 10px 0;">
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">
+                    Summary of all digital assets flowing through the VoTal9ja gateway.
+                </p>
+                <div style="margin-bottom: 15px;">
+                    <small>Registration Count</small>
+                    <p style="font-weight: bold; font-size: 1.2rem;">{{ registrations|length }} Nodes</p>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <small>Total Vote Count</small>
+                    <p style="font-weight: bold; font-size: 1.2rem; color: var(--opay-green);">{{ total_votes_count }} Tickets</p>
+                </div>
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+                <p style="font-size: 0.75rem; text-align: center; color: var(--text-dim);">
+                    <i class="fa-solid fa-clock"></i> Last calculated: 30/Apr/2026
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

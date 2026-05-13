@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | Discover Nigerian Talent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS Reset & Global Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { line-height: 1.6; color: #333; background-color: #f9f9f9; }
+
+        /* Navigation */
+        nav {
+            background: #fff; height: 70px; display: flex; justify-content: space-between;
+            align-items: center; padding: 0 5%; position: fixed; width: 100%; top: 0;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #E63946; }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a { text-decoration: none; color: #333; font-weight: 500; transition: 0.3s; }
+        
+        /* Nav Highlight Class */
+        nav ul li a.active { color: #E63946; border-bottom: 2px solid #E63946; }
+
+        /* Sections */
+        section { padding: 100px 10%; min-height: 600px; }
+
+        /* 1. Introduction Section */
+        #home { text-align: center; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000') no-repeat center/cover; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #home h1 { font-size: 3rem; margin-bottom: 20px; }
+        .intro-text { max-width: 800px; font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px; }
+
+        /* 2. Talent Slider */
+        .talent-section { background: #fff; padding: 60px 5%; overflow: hidden; }
+        .talent-section h2 { text-align: center; margin-bottom: 40px; }
+        .slider-container {
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            gap: 20px; padding-bottom: 20px; scrollbar-width: none;
+        }
+        .slider-container::-webkit-scrollbar { display: none; }
+        .talent-card {
+            flex: 0 0 calc(50% - 10px); 
+            scroll-snap-align: start; background: #fff; border-radius: 12px;
+            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .talent-card img { width: 100%; height: 300px; object-fit: cover; }
+        .talent-info { padding: 15px; text-align: center; }
+        .talent-info h4 { color: #E63946; margin-bottom: 10px; }
+
+        /* 3. About Us */
+        #about { background: #f1f1f1; }
+        .about-content { display: block; gap: 50px; align-items: center; max-width: 1000px; margin: 0 auto; }
+
+        /* 4. Registration Form - BEAUTIFIED VOTAL9JA VERSION */
+        #register { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            text-align: center; 
+            padding: 120px 5%;
+        }
+        .reg-card { 
+            max-width: 550px; margin: 0 auto; padding: 50px 40px; 
+            box-shadow: 0 20px 50px rgba(29, 53, 87, 0.15); 
+            border-radius: 25px; background: #ffffff;
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
+        }
+        .reg-card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 8px;
+            background: linear-gradient(to right, #1d3557, #E63946);
+            border-radius: 25px 25px 0 0;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group i {
+            position: absolute; left: 15px; top: 40px;
+            color: #E63946; font-size: 0.9rem;
+        }
+        .reg-card label {
+            font-size: 0.75rem; font-weight: bold; color: #1d3557;
+            text-transform: uppercase; letter-spacing: 1px; margin-left: 5px;
+        }
+        .reg-card input, .reg-card select { 
+            width: 100%; padding: 14px 15px 14px 40px; margin-top: 5px;
+            border: 1.5px solid #e1e8ef; border-radius: 10px; 
+            font-size: 1rem; transition: 0.3s; background: #fcfdfe;
+        }
+        .reg-card input:focus, .reg-card select:focus {
+            border-color: #E63946; outline: none; box-shadow: 0 0 10px rgba(230, 57, 70, 0.1);
+        }
+        .btn-pay { 
+            width: 100%; padding: 18px; background: #E63946; color: white; 
+            border: none; border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            margin-top: 25px; transition: 0.4s; box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+        }
+        .btn-pay:hover {
+            background: #1d3557; transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(29, 53, 87, 0.4);
+        }
+
+        footer {
+            background: #1d3557; color: #ffffff; padding: 60px 10% 30px;
+            text-align: center; border-top: 5px solid #E63946;
+        }
+        .footer-logo { font-size: 2rem; font-weight: bold; }
+        .footer-logo span { color: #E63946; }
+        .footer-links { display: flex; gap: 20px; list-style: none; justify-content: center; margin: 20px 0; }
+        .footer-links a { color: #bdc3c7; text-decoration: none; font-size: 0.9rem; }
+        .social-container { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; }
+        .social-icon { width: 50px; height: 50px; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #ffffff; text-decoration: none; }
+        .copyright { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.8rem; color: #bdc3c7; }
+
+        @media (max-width: 768px) {
+            .talent-card { flex: 0 0 100%; }
+            #home h1 { font-size: 2rem; }
+            .reg-card { padding: 30px 20px; }
+        }
+
+        :root {
+            --primary: #E63946;
+            --navy: #1d3557;
+            --overlay: rgba(255, 255, 255, 0.9);
+        }
+        .brand-logo span { color: var(--primary); }
+        .brand-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 10px;
+            text-transform: unset;
+            letter-spacing: 1px;
+        }
+
+        /* Maintenance Alert Style */
+        .maintenance-box {
+            padding: 30px;
+            background: #fdf2f2;
+            border: 2px dashed #E63946;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-logo">
+    <img src="static/image/logo.jpg" alt="" style="height: 60px; width: auto; vertical-align: middle;">
+</div>
+        <ul id="main-nav">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About Us</a></li>
+            <li><a href="#register" class="nav-link">Register</a></li>
+            <li><a href="rules.html" class="nav-link">Handbook</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <h1>UNLEASH YOUR POTENTIAL</h1>
+        <div class="intro-text">
+            Nigeria is a land overflowing with untapped potential, from the rhythmic beats of our local drums to the digital canvases of our tech-savvy youth. VoTal9ja was birthed from a single vision: to bridge the gap between hidden local talent and the global spotlight. We believe that every Nigerian, regardless of their background or state of origin, deserves a stage to showcase their unique gifts. Whether you are a singer, a dancer, an artist, or a digital creator, VoTal9ja is your gateway to excellence.<br><br>
+            Our platform is not just a competition; it is a community built on the pillars of transparency, empowerment, and growth. By participating in this journey, you gain access to a network of mentors and a national audience ready to cheer you on. We are committed to ensuring that the selection process is fair and that every voice is heard. The road to greatness often starts with a single step, and for many, that step is right here with us. Join us as we redefine what it means to be a talent in the 21st century. Your journey to stardom starts today with VoTal9ja.
+        </div>
+        {% if not maintenance_mode %}
+        <a href="#register" class="btn-pay" style="width: auto; padding: 15px 40px; text-decoration: none;">Interested? Click to Register</a>
+        {% endif %}
+    </section>
+
+    <div class="talent-section">
+        <h2>Our Categories & Impact</h2>
+        <div class="slider-container">
+            <div class="talent-card"><img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=500"><div class="talent-info"><h4>Vocalists</h4><p>Voice impact through VoTal9ja.</p></div></div>
+            <div class="talent-card"><img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=500"><div class="talent-info"><h4>Dancers</h4><p>Rhythm of Nigeria.</p></div></div>
+            <div class="talent-card"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=500"><div class="talent-info"><h4>Artists</h4><p>Visual creativity.</p></div></div>
+            <div class="talent-card"><img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?q=80&w=500"><div class="talent-info"><h4>Comedians</h4><p>Laughter from the roots.</p></div></div>
+            <div class="talent-card"><img src="https://images.unsplash.com/photo-1492619334760-44093952f6c9?q=80&w=500"><div class="talent-info"><h4>Poets</h4><p>Power of words.</p></div></div>
+            <div class="talent-card"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=500"><div class="talent-info"><h4>Actors</h4><p>Dramatizing Nigeria.</p></div></div>
+        </div>
+    </div>
+
+    <section id="about">
+        <h2>About VoTal9ja</h2>
+        <div class="about-content">
+            <b>The Genesis: A New Era for Nigerian Excellence</b> <br>
+            Nigeria is a powerhouse of human potential. From the rhythmic beats of our local drums to the digital canvases of our tech-savvy youth, there is a rhythm the world is waiting to hear. <br>For too long, the path to stardom has been reserved for those with the right connections. VoTal9ja was created to change that narrative. We are a talent discovery brand that believes the next global icon is currently sitting in a room somewhere in Nigeria, waiting for a single opportunity to be seen. <br><br>
+            <b>A Historic Beginning</b> <br>
+            This year marks the official Maiden Edition of VoTal9ja. Being a new brand is our greatest strength. It means we are fresh, hungry for excellence, and looking for the pioneers who will define this legacy. Every great movement had a "Year One." <br> By joining us now, you are not just a contestant; you are a founding member. You are part of the original class of Nigerian talents who dared to believe in a new platform before it became a household name. This is your chance to grow with us and be the face of our success story. <br><br>
+            <b>Why We Started</b> <br>
+            We noticed a gap. Many talented youths have the skill but lack the structure. They have the passion but lack the stage. VoTal9ja is the bridge over that gap. <br> Our mission is to provide a structured, fair, and highly visible platform where talent meets opportunity. We aren't just looking for performers; we are looking for the ambassadors of Nigerian culture who can represent our resilience and creativity on the world stage. <br><br>
+            <b>The Rewards: Investing in Your Future</b> <br>
+            At VoTal9ja, we believe talent should be rewarded in a way that truly changes a person’s trajectory. We have set our prize pool to ensure that our winners have the capital they need to invest in their craft, education, or business. In this maiden edition, we are putting our money where our mouth is to support the youth of this nation. <br><br>
+            <b>The Official Prize Structure:</b> <br>
+            1st Runner Up: A life-changing cash prize of <b>₦500,000</b>. Designed as a "launchpad" fund—enough to produce a professional project or brand a creative business. <br>
+            2nd Runner Up: A significant reward of <b>₦300,000.</b> We recognize that excellence comes in many forms, and we support your journey toward the top. <br>
+            3rd Runner Up: A cash prize of <b>₦150,000.</b> Even at the third tier, we ensure our contestants walk away with the means to keep their dreams alive. <br><br>
+            <b>The Benefit of Joining Now</b> <br>
+            Because this is our first run, our focus is 100% on you. Unlike established shows where you are just another number, VoTal9ja is currently in its most focused stage. Your talent has a higher chance of being noticed, and your story has a higher chance of being told. By participating, you gain: <br> <br>
+            <b>A Professional Digital Presence:</b> A secure platform where your videos and images are showcased to the world. <br>
+            <b>National Networking:</b> Connect with other discovered talents across all 36 states and the FCT. <br>
+            <b>The "Founder" Badge:</b> In years to come, you will be able to say, "I was there at the very beginning." <br>
+            The Stage is Set. Nigeria is waiting. We are waiting. Don't let fear of starting small stop you from winning big. VoTal9ja is starting small today so that you can stand tall tomorrow. Register now and let’s show the world that Nigeria’s talent is second to none.
+        </div>
+    </section>
+
+    <section id="register">
+        <div class="reg-card">
+            {% if maint_status %}
+                <div style="padding: 40px 20px; text-align: center;">
+                    <i class="fas fa-tools" style="font-size: 3.5rem; color: #E63946; margin-bottom: 20px;"></i>
+                    <h2 style="color: #1d3557; letter-spacing: 1px;">SYSTEM MAINTENANCE</h2>
+                    <p style="color: #666; margin-top: 15px; font-weight: 500;">
+                        The VoTal9ja portal is currently undergoing optimization. 
+                        Login and Registration are temporarily unavailable.
+                    </p>
+                </div>
+            {% elif not reg_status %}
+                <div style="padding: 40px 20px; text-align: center;">
+                    <i class="fas fa-calendar-times" style="font-size: 3.5rem; color: #1d3557; margin-bottom: 20px;"></i>
+                    <h2 style="color: #1d3557;">REGISTRATION CLOSED</h2>
+                    <p style="color: #666; margin-top: 15px;">
+                        The window for the 2026 Maiden Edition has officially ended.
+                    </p>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                    <p style="font-size: 0.9rem;">Already a member? 
+                        <a href="{{ url_for('login') }}" style="color: #E63946; font-weight: bold; text-decoration: none;">Access Contestant Dashboard</a>
+                    </p>
+                </div>
+            {% else %}
+                <h2 style="color: #1d3557; font-size: 1.8rem;">Maiden Edition 2026</h2>
+                <p style="margin-bottom: 30px; color: #666; font-size: 0.9rem;">Entry Fee: <span style="color: #E63946; font-weight: bold; font-size: 1.1rem;">₦10,000</span></p>
+                
+                <form action="/register" method="POST" onsubmit="return validatePasswords()">
+                    <div class="input-group">
+                        <label>Social Media Handle</label>
+                        <i class="fas fa-at"></i>
+                        <input type="text" name="fullname" placeholder="e.g. @yourname_talent" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Gmail Address</label>
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="active-email@gmail.com" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Secure Password</label>
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <i class="fas fa-shield-alt"></i>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+                    </div>
+
+                    <p id="pass-error" style="color: #E63946; font-size: 0.85rem; display: none; margin-top: -10px; margin-bottom: 10px; font-weight: bold;">
+                        <i class="fas fa-exclamation-triangle"></i> Passwords do not match!
+                    </p>
+
+                   <div class="input-group">
+                        <label>State of Origin</label>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <select name="state" required style="padding-left: 40px;">
+                            <option value="" disabled selected>Choose your state</option>
+                            <option value="Abia">Abia</option>
+                            <option value="Adamawa">Adamawa</option>
+                            <option value="Akwa Ibom">Akwa Ibom</option>
+                            <option value="Anambra">Anambra</option>
+                            <option value="Bauchi">Bauchi</option>
+                            <option value="Bayelsa">Bayelsa</option>
+                            <option value="Benue">Benue</option>
+                            <option value="Borno">Borno</option>
+                            <option value="Cross River">Cross River</option>
+                            <option value="Delta">Delta</option>
+                            <option value="Ebonyi">Ebonyi</option>
+                            <option value="Edo">Edo</option>
+                            <option value="Ekiti">Ekiti</option>
+                            <option value="Enugu">Enugu</option>
+                            <option value="FCT">Federal Capital Territory (Abuja)</option>
+                            <option value="Gombe">Gombe</option>
+                            <option value="Imo">Imo</option>
+                            <option value="Jigawa">Jigawa</option>
+                            <option value="Kaduna">Kaduna</option>
+                            <option value="Kano">Kano</option>
+                            <option value="Katsina">Katsina</option>
+                            <option value="Kebbi">Kebbi</option>
+                            <option value="Kogi">Kogi</option>
+                            <option value="Kwara">Kwara</option>
+                            <option value="Lagos">Lagos</option>
+                            <option value="Nasarawa">Nasarawa</option>
+                            <option value="Niger">Niger</option>
+                            <option value="Ogun">Ogun</option>
+                            <option value="Ondo">Ondo</option>
+                            <option value="Osun">Osun</option>
+                            <option value="Oyo">Oyo</option>
+                            <option value="Plateau">Plateau</option>
+                            <option value="Rivers">Rivers</option>
+                            <option value="Sokoto">Sokoto</option>
+                            <option value="Taraba">Taraba</option>
+                            <option value="Yobe">Yobe</option>
+                            <option value="Zamfara">Zamfara</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-pay"><i class="fas fa-credit-card"></i> Pay ₦10,000 & Join Now</button>
+                </form>
+
+                <div style="margin-top: 25px; text-align: center; font-size: 0.95rem; color: #555;">
+                    Already part of the legacy? 
+                    <a href="{{ url_for('login') }}" style="color: #E63946; font-weight: bold; text-decoration: none;">Login here</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+           <div class="brand-logo">
+    <img src="static/image/logo 2.jpg" alt="" style="height: 30px; width: auto; vertical-align: middle;">
+</div>
+            <p style="max-width: 500px; color: #ecf0f1; font-size: 0.9rem; margin: 10px auto;"> Empowering the next generation of Nigerian legends. Join the movement, showcase your talent, and let the world see the heartbeat of Africa. </p>
+            <ul class="footer-links">
+                <li><a href="#home">Home</a></li><li><a href="#about">About Us</a></li><li><a href="#register">Register</a></li>
+            </ul>
+            <div class="social-container">
+                <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a><a href="#" class="social-icon"><i class="fab fa-youtube"></i></a><a href="#" class="social-icon"><i class="fab fa-instagram"></i></a><a href="#" class="social-icon"><i class="fab fa-twitter"></i></a><a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <div class="copyright"> <p>&copy; 2026 VoTal9ja Talent Brand. All Rights Reserved. <br> Built for Nigerian Excellence.</p> </div>
+        </div>
+    </footer>
+
+    <script>
+        // NAVIGATION SCROLL LOGIC
+        const sections = document.querySelectorAll("section");
+        const navLinks = document.querySelectorAll(".nav-link");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach((section) => {
+                if (pageYOffset >= section.offsetTop - 100) { current = section.getAttribute("id"); }
+            });
+            navLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href").includes(current)) { link.classList.add("active"); }
+            });
+        });
+
+        // PASSWORD MATCH VALIDATION
+        function validatePasswords() {
+            const pass = document.getElementById("password").value;
+            const confirmPass = document.getElementById("confirm_password").value;
+            const errorText = document.getElementById("pass-error");
+
+            if (pass !== confirmPass) {
+                errorText.style.display = "block";
+                return false; 
+            } else {
+                errorText.style.display = "none";
+                return true; 
+            }
+        }
+    </script>
+</body>
+</html>

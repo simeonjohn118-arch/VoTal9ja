@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | Broadcast Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #050a18;
+            --bg-glow: #1d3557;
+            --accent-red: #E63946;
+            --ice-blue: #a8dadc;
+            --pure-white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at center, var(--bg-glow), var(--bg-deep));
+            color: var(--pure-white);
+            min-height: 100vh;
+            padding: 40px 5%;
+        }
+
+        .header { margin-bottom: 40px; border-left: 5px solid var(--accent-red); padding-left: 20px; }
+        .header h1 { font-size: 2rem; letter-spacing: 3px; text-transform: uppercase; }
+        .header p { color: var(--ice-blue); font-size: 0.85rem; }
+
+        .broadcast-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1000px) { .broadcast-container { grid-template-columns: 1fr; } }
+
+        /* Compose Section */
+        .compose-box, .recipient-box {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.75rem; text-transform: uppercase; color: var(--ice-blue); margin-bottom: 8px; letter-spacing: 1px; }
+        
+        .input-field {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-field:focus { border-color: var(--accent-red); box-shadow: 0 0 15px rgba(230, 57, 70, 0.3); }
+
+        textarea.input-field { min-height: 200px; resize: none; font-size: 0.95rem; line-height: 1.6; }
+
+        /* PDF Upload Styling */
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+            height: 60px;
+            background: rgba(0,0,0,0.4);
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .file-upload-wrapper:hover { border-color: var(--accent-red); background: rgba(230, 57, 70, 0.05); }
+
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-dummy { color: var(--ice-blue); display: flex; gap: 10px; align-items: center; font-size: 0.85rem; }
+        .file-dummy i { font-size: 1.2rem; color: var(--accent-red); }
+
+        /* Recipient List */
+        .recipient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .list-wrapper { max-height: 500px; overflow-y: auto; padding-right: 10px; }
+        
+        .contestant-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .contestant-item:hover { border-color: var(--ice-blue); background: rgba(255,255,255,0.07); }
+
+        .contestant-item input[type="checkbox"] {
+            width: 18px; height: 18px; margin-right: 15px; accent-color: var(--accent-red);
+        }
+
+        .c-info span { display: block; }
+        .c-name { font-weight: 700; font-size: 0.9rem; }
+        .c-email { font-size: 0.75rem; color: var(--ice-blue); }
+
+        /* Send Button */
+        .send-btn {
+            width: 100%;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .send-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>BROADCAST ENGINE</h1>
+        <p>VoTal9ja Central Communication Terminal</p>
+    </div>
+
+    <div class="broadcast-container">
+        <!-- Composition Pane -->
+        <div class="compose-box">
+            <div class="form-group">
+                <label>Subject Line</label>
+                <input type="text" id="subject" class="input-field" placeholder="e.g., Important Update for Contestants">
+            </div>
+
+            <div class="form-group">
+                <label>Attach Official Document (PDF)</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="document" accept=".pdf" class="file-input">
+                    <div class="file-dummy">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span id="file-name">Click to select PDF document</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Message Body</label>
+                <textarea id="message" class="input-field" placeholder="Write your message here..."></textarea>
+            </div>
+            <button onclick="sendBroadcast()" id="broadcastBtn" class="send-btn">
+                <i class="fa-solid fa-paper-plane"></i> DISPATCH BROADCAST
+            </button>
+        </div>
+
+        <!-- Selection Pane -->
+        <div class="recipient-box">
+            <div class="recipient-header">
+                <h3 style="font-size: 0.8rem; letter-spacing: 1px;">RECIPIENT SELECTION</h3>
+                <label style="font-size: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="selectAll" onclick="toggleAll(this)"> SELECT ALL
+                </label>
+            </div>
+
+            <div class="list-wrapper">
+                {% for c in contestants %}
+                <div class="contestant-item" onclick="toggleRow(this)">
+                    <input type="checkbox" class="c-check" value="{{ c.id }}" onclick="event.stopPropagation()">
+                    <div class="c-info">
+                        <span class="c-name">{{ c.fullname }}</span>
+                        <span class="c-email">{{ c.email }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 50px; opacity: 0.5; font-size: 0.8rem;">
+                    [ NO REGISTERED CONTESTANTS DETECTED ]
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update UI when file is selected
+        document.getElementById('document').addEventListener('change', function(e) {
+            let name = e.target.files[0] ? e.target.files[0].name : "Click to select PDF document";
+            document.getElementById('file-name').innerText = name;
+        });
+
+        function toggleAll(source) {
+            const checks = document.querySelectorAll('.c-check');
+            checks.forEach(cb => cb.checked = source.checked);
+        }
+
+        function toggleRow(row) {
+            const cb = row.querySelector('.c-check');
+            cb.checked = !cb.checked;
+        }
+
+        function sendBroadcast() {
+            const selected = Array.from(document.querySelectorAll('.c-check:checked')).map(cb => cb.value);
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            const fileInput = document.getElementById('document');
+            const btn = document.getElementById('broadcastBtn');
+
+            if (selected.length === 0) return alert("CRITICAL: No recipients selected.");
+            if (!subject || !message) return alert("CRITICAL: Message fields cannot be empty.");
+
+            if (confirm(`INITIATE BROADCAST TO ${selected.length} CONTESTANTS?`)) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> TRANSMITTING...';
+
+                // We use FormData because we are sending a file
+                const formData = new FormData();
+                selected.forEach(id => formData.append('ids', id));
+                formData.append('subject', subject);
+                formData.append('message', message);
+                
+                if (fileInput.files[0]) {
+                    formData.append('document', fileInput.files[0]);
+                }
+
+                fetch('/admin/broadcast', {
+                    method: 'POST',
+                    body: formData // No headers needed, browser sets boundary for FormData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(err => {
+                    alert("Communication Error.");
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> DISPATCH BROADCAST';
+                });
+            }
+        }
+    </script>
+</body>
+</html>

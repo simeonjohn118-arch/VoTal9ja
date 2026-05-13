@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | My Media Library</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Modern Dark Aesthetic */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top right, #1d3557, #0a111a); 
+            color: #ffffff; 
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-size: 1.4rem; font-weight: bold; color: #E63946; text-decoration: none; letter-spacing: 1px; }
+        .back-nav { color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 600; opacity: 0.8; transition: 0.3s; }
+        .back-nav:hover { opacity: 1; color: #E63946; }
+
+        .container {
+            padding: 50px 5%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            margin-bottom: 40px;
+            border-left: 5px solid #E63946;
+            padding-left: 20px;
+        }
+        .section-title h2 { font-size: 2rem; letter-spacing: -0.5px; }
+        .section-title p { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
+
+        /* Professional Media Grid */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .media-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .media-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #E63946;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .media-preview {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .media-preview video, .media-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-info {
+            padding: 20px;
+        }
+
+        .media-info strong { display: block; font-size: 1rem; margin-bottom: 5px; color: #fff; }
+        .file-date { color: rgba(255, 255, 255, 0.5); font-size: 0.75rem; text-transform: uppercase; }
+
+        /* --- THE POLITE FAINTED STATE --- */
+        .empty-library {
+            grid-column: 1 / -1;
+            padding: 120px 20px;
+            text-align: center;
+            opacity: 0.3; /* Fainted look */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .empty-library i { font-size: 4rem; margin-bottom: 25px; color: #E63946; }
+        .empty-library p { font-style: italic; max-width: 400px; font-size: 1.1rem; line-height: 1.6; }
+
+        .footer-nav {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .back-link {
+            padding: 12px 30px;
+            background: #E63946;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            background: #fff;
+            color: #E63946;
+            box-shadow: 0 10px 20px rgba(230, 57, 70, 0.4);
+        }
+
+        /* --- TOAST NOTIFICATION STYLING --- */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .toast {
+            background: rgba(29, 53, 87, 0.9);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border-left: 5px solid #E63946;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.4s ease forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast.fade-out {
+            animation: fadeOut 0.4s ease forwards;
+        }
+        @keyframes fadeOut {
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .media-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <header>
+        <a href="/" class="logo">VoTal<span>9ja</span></a>
+        <a href="contestant.html" class="back-nav">DASHBOARD</a>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h2>My Media Vault</h2>
+            <p>Review your uploaded photos and competition entries.</p>
+        </div>
+
+        <div class="media-grid">
+                <div class="media-card">
+                    <div class="media-preview">
+                            <video src="{{ url_for('static', filename='uploads/' + item.filename) }}" controls></video>
+                    
+                            <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" alt="Uploaded Content">
+                    </div>
+                    <div class="media-info">
+                        <strong>{{ item.original_name if item.original_name else 'Submission File' }}</strong>
+                        <div class="file-date">Uploaded: {{ item.upload_date.strftime('%d %b, %Y') if item.upload_date else 'Recent' }}</div>
+                    </div>
+                </div>
+                <div class="empty-library">
+                    <i class="fas fa-film"></i>
+                    <p>Your vault is currently quiet. Any talent you share with us will be safely stored here for your review. We can't wait to see what you've got!</p>
+                </div>
+        </div>
+
+        <div class="footer-nav">
+            <a href="contestant.html" class="back-link"><i class="fas fa-chevron-left"></i> Return to Profile</a>
+        </div>
+    </div>
+
+    <script>
+        // --- TOAST NOTIFICATION LOGIC ---
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            container.appendChild(toast);
+
+            // Auto-remove toast after 3.5 seconds
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoTal9ja | Official Rules & Regulations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Professional Dark Theme */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top right, #1d3557, #0a111a); 
+            color: #ffffff; 
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { font-size: 1.4rem; font-weight: bold; color: #E63946; text-decoration: none; letter-spacing: 1px; }
+        .back-nav { color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 600; opacity: 0.8; transition: 0.3s; }
+        .back-nav:hover { opacity: 1; color: #E63946; }
+
+        .container {
+            padding: 60px 5%;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .handbook-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .handbook-header h1 {
+            font-size: 2.5rem;
+            color: #E63946;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .handbook-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        /* Rule Sections */
+        .rule-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+
+        .rule-card:hover {
+            border-color: #E63946;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .rule-card h3 {
+            color: #E63946;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+        }
+
+        .rule-card h3 span {
+            background: #1d3557;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-size: 1rem;
+        }
+
+        .rule-card ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .rule-card ul li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 25px;
+            font-size: 1rem;
+            color: #e2e8f0;
+        }
+
+        .rule-card ul li::before {
+            content: "\f058"; /* FontAwesome Check Circle */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: #E63946;
+        }
+
+        .footer-actions {
+            text-align: center;
+            margin-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .btn-action {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-print { border: 2px solid #E63946; color: #fff; }
+        .btn-print:hover { background: #E63946; }
+
+        .btn-back { background: #E63946; color: #fff; }
+        .btn-back:hover { background: #fff; color: #E63946; }
+
+        /* Print Media Styles */
+        @media print {
+            body { background: #fff; color: #000; }
+            header, .footer-actions { display: none; }
+            .rule-card { border: 1px solid #ddd; background: #fff; break-inside: avoid; }
+            .rule-card h3, .rule-card ul li::before { color: #000; }
+            .container { padding: 0; max-width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .handbook-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="logo">VoTal<span>9ja</span></a>
+        <a href="contestant.html" class="back-nav">RETURN TO PROFILE</a>
+    </header>
+
+    <div class="container">
+        <div class="handbook-header">
+            <h1>Contestant Handbook</h1>
+            <p>Rules, Regulations, and Terms of Participation</p>
+        </div>
+
+        <div class="rule-card">
+            <h3><span>1</span> Eligibility & Registration</h3>
+            <ul>
+                <li><strong>Open Entry:</strong> The competition is open to all individuals regardless of age.</li>
+                <li><strong>Unique Profile:</strong> Discovery of multiple accounts belonging to the same individual leads to immediate disqualification.</li>
+                <li><strong>Accuracy of Info:</strong> Full legal names must be used. For minors, a guardian’s contact info is required.</li>
+            </ul>
+        </div>
+
+        <div class="rule-card">
+            <h3><span>2</span> Submission Standards</h3>
+            <ul>
+                <li><strong>Originality:</strong> All performances must be original or appropriately credited covers.</li>
+                <li><strong>Quality:</strong> Videos must be clear (minimum 720p) with audible sound.</li>
+                <li><strong>Duration:</strong> Clips must be between 60 seconds and 3 minutes.</li>
+                <li><strong>Prohibited Content:</strong> No nudity, hate speech, or extreme violence. Offensive content will be removed immediately.</li>
+            </ul>
+        </div>
+
+        <div class="rule-card">
+            <h3><span>3</span> Voting & Fair Play</h3>
+            <ul>
+                <li><strong>Anti-Spam:</strong> Use of bots or paid click farms to inflate votes is strictly prohibited.</li>
+                <li><strong>Audits:</strong> Organizers reserve the right to subtract fraudulent votes after a system audit.</li>
+                <li><strong>Verified Counts:</strong> Only votes from registered and verified users will be counted.</li>
+            </ul>
+        </div>
+
+        <div class="rule-card">
+            <h3><span>4</span> Intellectual Property</h3>
+            <ul>
+                <li><strong>Usage Grant:</strong> Contestants grant VoTal9ja a non-exclusive right to use media for promotional purposes.</li>
+                <li><strong>Data Security:</strong> All media is stored securely and linked uniquely to your contestant ID.</li>
+            </ul>
+        </div>
+
+        <div class="rule-card">
+            <h3><span>5</span> Conduct</h3>
+            <ul>
+                <li><strong>Sportsmanship:</strong> Harassment of other participants or staff leads to disqualification.</li>
+                <li><strong>Final Decisions:</strong> Verified vote counts and judge scores are final and cannot be contested.</li>
+            </ul>
+        </div>
+
+        <div class="footer-actions">
+            <button onclick="window.print()" class="btn-action btn-print"><i class="fas fa-print"></i> PRINT RULES</button>
+            <a href="contestant.html" class="btn-action btn-back">GOT IT, BACK TO PROFILE</a>
+        </div>
+    </div>
+
+</body>
+</html>
