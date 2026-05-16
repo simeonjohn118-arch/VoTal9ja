@@ -54,17 +54,21 @@
         #about { background: #f1f1f1; }
         .about-content { display: block; gap: 50px; align-items: center; max-width: 1000px; margin: 0 auto; }
 
-        /* 4. Registration Form - BEAUTIFIED VOTAL9JA VERSION */
+        /* 4. Registration Form - UPDATED CINEMATIC HIGH-QUALITY DESIGN */
         #register { 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            background: linear-gradient(rgba(29, 53, 87, 0.85), rgba(230, 57, 70, 0.4)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200') no-repeat center/cover; 
+            background-attachment: fixed;
             text-align: center; 
             padding: 120px 5%;
         }
         .reg-card { 
             max-width: 550px; margin: 0 auto; padding: 50px 40px; 
-            box-shadow: 0 20px 50px rgba(29, 53, 87, 0.15); 
-            border-radius: 25px; background: #ffffff;
-            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); 
+            border-radius: 25px; 
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             position: relative;
         }
         .reg-card::before {
@@ -120,6 +124,7 @@
             .talent-card { flex: 0 0 100%; }
             #home h1 { font-size: 2rem; }
             .reg-card { padding: 30px 20px; }
+            #register { background-attachment: scroll; padding: 80px 4%; }
         }
 
         :root {
