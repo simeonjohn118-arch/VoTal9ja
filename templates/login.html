@@ -9,13 +9,14 @@
         :root {
             --primary: #E63946;
             --navy: #1d3557;
-            --overlay: rgba(255, 255, 255, 0.9);
+            --overlay: rgba(255, 255, 255, 0.96);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, var(--navy) 0%, #457b9d 100%);
+            background: linear-gradient(rgba(29, 53, 87, 0.85), rgba(230, 57, 70, 0.4)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200') no-repeat center/cover;
+            background-attachment: fixed;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,15 +24,17 @@
             padding: 20px;
         }
 
-        /* Glassmorphism Card */
+        /* Glassmorphism Card Matching Registration Style */
         .login-card {
             background: var(--overlay);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             width: 100%;
             max-width: 420px;
             padding: 50px 40px;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(255, 255, 255, 0.25);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -139,18 +142,22 @@
             font-size: 0.85rem;
             border: 1px solid var(--primary);
         }
+
+        @media (max-width: 480px) {
+            body { background-attachment: scroll; }
+            .login-card { padding: 40px 20px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-       <div class="brand-logo">
-    <img src="static/image/logo 2.jpg" alt="" style="height: 30px; width: auto; vertical-align: middle;">
-</div>
+        <div class="brand-logo">
+            <img src="static/image/logo 2.jpg" alt="" style="height: 30px; width: auto; vertical-align: middle;">
+        </div>
         <h2>Competitor Login</h2>
 
-              <div class="flash-msg">{{ message }}</div>
-            
+        <div class="flash-msg">{{ message }}</div>
 
         <form action="/login" method="POST">
             <div class="input-group">
