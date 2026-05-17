@@ -24,17 +24,49 @@
             padding: 20px;
         }
 
+        /* LED Moving Border Asset Track Outer Shell Layer */
+        .login-card-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            padding: 3px; /* Controls exact density/thickness of the tracking LED line */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 25px rgba(230, 57, 70, 0.15);
+            z-index: 1;
+        }
+
+        .login-card-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent, 
+                var(--primary), 
+                transparent, 
+                var(--navy), 
+                transparent, 
+                var(--primary)
+            );
+            animation: ledTrackRotate 4s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes ledTrackRotate {
+            100% { transform: rotate(360deg); }
+        }
+
         /* Glassmorphism Card Matching Registration Style */
         .login-card {
             background: var(--overlay);
             backdrop-filter: blur(16px) saturate(120%); /* Synced filter properties */
             -webkit-backdrop-filter: blur(16px) saturate(120%);
             width: 100%;
-            max-width: 420px;
             padding: 50px 40px;
-            border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); 
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 17px; /* Marginally scaled to clear inner wrapper frame radius */
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -158,38 +190,40 @@
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="brand-logo">
-            <img src="static/image/logo 2.jpg" alt="" style="height: 30px; width: auto; vertical-align: middle;">
-        </div>
-        <h2>Competitor Login</h2>
-
-        <div class="flash-msg">{{ message }}</div>
-
-        <form action="/login" method="POST">
-            <div class="input-group">
-                <label>Email Address</label>
-                <i class="fas fa-envelope"></i>
-                <input type="email" name="email" placeholder="Enter your registered email" required>
+    <div class="login-card-wrapper">
+        <div class="login-card">
+            <div class="brand-logo">
+                <img src="static/image/logo 2.jpg" alt="" style="height: 30px; width: auto; vertical-align: middle;">
             </div>
+            <h2>Competitor Login</h2>
 
-            <div class="input-group" style="margin-bottom: 10px;">
-                <label>Secure Password</label>
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="••••••••" required>
+            <div class="flash-msg">{{ message }}</div>
+
+            <form action="/login" method="POST">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Enter your registered email" required>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label>Secure Password</label>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+                
+                <div style="text-align: right; margin-bottom: 25px;">
+                    <a href="#" style="font-size: 0.8rem; color: #eee; text-decoration: none; text-shadow: 0 1px 1px rgba(0,0,0,0.3);">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Access Dashboard <i class="fas fa-sign-in-alt" style="margin-left: 8px;"></i>
+                </button>
+            </form>
+
+            <div class="footer-links">
+                New to the competition? <a href="/">Register Now</a>
             </div>
-            
-            <div style="text-align: right; margin-bottom: 25px;">
-                <a href="#" style="font-size: 0.8rem; color: #eee; text-decoration: none; text-shadow: 0 1px 1px rgba(0,0,0,0.3);">Forgot Password?</a>
-            </div>
-
-            <button type="submit" class="btn-login">
-                Access Dashboard <i class="fas fa-sign-in-alt" style="margin-left: 8px;"></i>
-            </button>
-        </form>
-
-        <div class="footer-links">
-            New to the competition? <a href="/">Register Now</a>
         </div>
     </div>
 
