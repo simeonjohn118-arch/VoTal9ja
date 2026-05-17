@@ -522,6 +522,26 @@ def payment_instructions(tx_id):
     transaction = db.session.get(VoteTransaction, tx_id)
     contestant = db.session.get(User, transaction.contestant_id)
     return render_template('payment_instructions.html', tx=transaction, contestant=contestant)
+@app.route('/rules')
+def rules():
+    """Renders the official competition guidelines and rules."""
+    return render_template('rules.html')
+
+@app.route('/ranking')
+def ranking():
+    """
+    Fetches qualified contestants ordered by vote count 
+    and renders the live leaderboard.
+    """
+    # Assuming your model is named Contestant and has fields like 'votes' and 'status'
+    # Adjust 'Contestant.votes.desc()' if your database field is named differently (e.g., vote_count)
+    try:
+        leaderboard = Contestant.query.filter_by(status='Qualified').order_by(Contestant.votes.desc()).all()
+    except NameError:
+        # Fallback if your database configuration/model name differs
+        leaderboard = []
+
+    return render_template('ranking.html', leaderboard=leaderboard)
 
 if __name__ == "__main__":
     with app.app_context():
