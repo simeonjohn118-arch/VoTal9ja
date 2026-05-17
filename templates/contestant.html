@@ -176,7 +176,7 @@
             box-shadow: 0 0 25px rgba(230, 57, 70, 0.4);
         }
 
-        .profile-square-container img, .profile-square-container svg { 
+        .profile-square-container img { 
             width: 100%; height: 100%; object-fit: cover; 
         }
 
@@ -411,23 +411,7 @@
         
         <div class="profile-row">
             <div class="profile-square-container" onclick="document.getElementById('profilePicInput').click()">
-                {% if user.profile_pic %}
-                    <img id="profilePreview" src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" alt="Contestant Photo">
-                {% else %}
-                    <svg id="profilePreview" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background: linear-gradient(135deg, #1d3557 0%, #0b132b 100%);">
-                        <defs>
-                            <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
-                                <stop offset="0%" stop-color="#f1faee" stop-opacity="0.25"/>
-                                <stop offset="100%" stop-color="#457b9d" stop-opacity="0"/>
-                            </radialGradient>
-                        </defs>
-                        <path d="M0 40 H200 M0 80 H200 M0 120 H200 M0 160 H200 M40 0 V200 M80 0 V200 M120 0 V200 M160 0 V200" stroke="rgba(69, 123, 157, 0.15)" stroke-width="1"/>
-                        <circle cx="100" cy="100" r="80" fill="url(#starGlow)"/>
-                        <rect x="15" y="15" width="170" height="170" rx="10" fill="none" stroke="rgba(230, 57, 70, 0.2)" stroke-width="1" stroke-dasharray="4 4"/>
-                        <path d="M100 45 L115.5 82.5 L155 85 L124.5 110.5 L134 149 L100 127.5 L66 149 L75.5 110.5 L45 85 L84.5 82.5 Z" fill="#f1faee" opacity="0.9" stroke="#457b9d" stroke-width="2" stroke-linejoin="round"/>
-                        <path d="M100 58 L110.5 86.5 L140 88.5 L117 108 L124 137 L100 120 L76 137 L83 108 L60 88.5 L89.5 86.5 Z" fill="none" stroke="#E63946" stroke-width="1" opacity="0.7"/>
-                    </svg>
-                {% endif %}
+                <img id="profilePreview" src="{{ url_for('static', filename='uploads/' + user.profile_pic) if user.profile_pic else 'https://via.placeholder.com/200x200?text=Upload+Photo' }}" alt="Contestant Photo">
                 <div class="upload-overlay">
                     <i class="fas fa-camera"></i>
                     <span style="font-size:0.7rem; font-weight:bold;">CHANGE PHOTO</span>
@@ -551,7 +535,6 @@
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const fillStar = document.getElementById('profilePreview');
             toast.className = 'toast';
             toast.innerHTML = `<i class="fas fa-shield-alt" style="color:var(--red)"></i> ${message}`;
             container.appendChild(toast);
