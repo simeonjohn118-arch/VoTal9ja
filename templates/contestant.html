@@ -20,7 +20,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
 
         body { 
-            background: #0b132b;
+            background: linear-gradient(rgba(11, 19, 43, 0.8), rgba(11, 19, 43, 0.9)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             color: var(--text-gold);
             line-height: 1.6;
             min-height: 100vh;
@@ -28,30 +32,27 @@
             position: relative;
         }
 
-        /* Rotating Stage Spotlight Background */
+        /* --- MULTI-SPOTLIGHT CAROUSEL STAGE OVERLAY --- */
         body::before {
             content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                from 0deg at 50% 50%,
-                #0b132b 0deg,
-                #0b132b 160deg,
-                rgba(69, 123, 157, 0.15) 180deg,
-                rgba(230, 57, 70, 0.2) 190deg,
-                rgba(69, 123, 157, 0.15) 200deg,
-                #0b132b 220deg,
-                #0b132b 360deg
-            );
-            animation: rotateSpotlight 12s linear infinite;
-            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* 4 distinct linear-gradient beams radiating from different corners/points on the stage */
+            background: 
+                linear-gradient(115deg, rgba(230, 57, 70, 0.12) 0%, transparent 40%),
+                linear-gradient(245deg, rgba(69, 123, 157, 0.15) 0%, transparent 45%),
+                linear-gradient(25deg, rgba(241, 250, 238, 0.08) 0%, transparent 35%),
+                linear-gradient(155deg, rgba(230, 57, 70, 0.1) 0%, transparent 40%);
+            background-blend-mode: screen;
+            z-index: 0;
             pointer-events: none;
+            animation: masterStagePulse 8s ease-in-out infinite alternate;
         }
 
-        /* Ambient Stage Glow Layer */
+        /* 4 Independent Moving Spotlight Elements */
         body::after {
             content: '';
             position: fixed;
@@ -59,14 +60,43 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, transparent 20%, #0b132b 80%);
-            z-index: -1;
+            z-index: 0;
             pointer-events: none;
+            background-image: 
+                radial-gradient(circle at 20% 10%, rgba(69, 123, 157, 0.25) 0%, transparent 25%),
+                radial-gradient(circle at 80% 15%, rgba(230, 57, 70, 0.25) 0%, transparent 25%),
+                radial-gradient(circle at 30% 90%, rgba(241, 250, 238, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 75% 85%, rgba(69, 123, 157, 0.2) 0%, transparent 25%);
+            animation: dynamicSpotlights 16s linear infinite;
         }
 
-        @keyframes rotateSpotlight {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes masterStagePulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        /* Complex structural movement mapping all 4 stage lights in different paths */
+        @keyframes dynamicSpotlights {
+            0% {
+                background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+                transform: scale(1);
+            }
+            25% {
+                background-position: 10% 15%, -15% 10%, 8% -10%, -5% 12%;
+                transform: scale(1.05);
+            }
+            50% {
+                background-position: -5% 25%, 10% -20%, -12% 15%, 15% -8%;
+                transform: scale(1);
+            }
+            75% {
+                background-position: 15% -10%, -8% 15%, 10% 5%, -10% -15%;
+                transform: scale(1.03);
+            }
+            100% {
+                background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+                transform: scale(1);
+            }
         }
 
         header {
