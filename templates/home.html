@@ -93,12 +93,20 @@
         .reg-card input, .reg-card select { 
             width: 100%; padding: 14px 15px 14px 40px; margin-top: 5px;
             border: 1.5px solid rgba(255, 255, 255, 0.25); border-radius: 10px; 
-            font-size: 1rem; transition: 0.3s; background: rgba(255, 255, 255, 0.9);
-            color: #1d3557; font-weight: 500;
+            font-size: 1rem; transition: 0.3s; 
+            background: transparent; /* Changed to fully transparent */
+            color: #ffffff; /* Text color changed to white */
+            font-weight: 500;
+        }
+        /* Custom styles for option elements inside transparent select so text is visible while picking items */
+        .reg-card select option {
+            background: #1d3557;
+            color: #ffffff;
         }
         .reg-card input:focus, .reg-card select:focus {
             border-color: #E63946; outline: none; box-shadow: 0 0 12px rgba(230, 57, 70, 0.3);
-            background: #ffffff;
+            background: transparent; /* Remained fully transparent on focus */
+            color: #ffffff;
         }
         .btn-pay { 
             width: 100%; padding: 18px; background: #E63946; color: white; 
