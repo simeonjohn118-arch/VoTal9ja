@@ -315,28 +315,69 @@
         .action-box {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--glass);
             border-radius: 20px;
             padding: 25px; 
             text-align: center;
-            transition: 0.4s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             min-height: 220px; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* LED Tracker Light Layers for Action Boxes */
+        .action-box::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(
+                transparent, 
+                var(--red), 
+                transparent, 
+                var(--navy), 
+                transparent, 
+                var(--red)
+            );
+            animation: boxLedRotate 4s linear infinite;
+            z-index: -2;
+        }
+
+        /* Inner container mask layer to create modern border thickness */
+        .action-box::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            background: rgba(29, 53, 87, 0.85);
+            border-radius: 18px;
+            z-index: -1;
+            transition: background 0.3s;
+        }
+
+        @keyframes boxLedRotate {
+            100% { transform: rotate(360deg); }
         }
 
         .action-box:hover {
             transform: translateY(-8px);
-            border-color: var(--red);
-            background: rgba(230, 57, 70, 0.05);
+            border-color: rgba(230, 57, 70, 0.5);
+            box-shadow: 0 15px 35px rgba(230, 57, 70, 0.25);
         } 
 
-        .action-box i { font-size: 2.2rem; color: var(--text-gold); margin-bottom: 15px; transition: 0.3s; }
+        .action-box:hover::after {
+            background: rgba(230, 57, 70, 0.15);
+        }
+
+        .action-box i { font-size: 2.2rem; color: var(--text-gold); margin-bottom: 15px; transition: 0.3s; z-index: 2; }
         .action-box:hover i { color: var(--red); transform: scale(1.1); }
-        .action-box h3 { margin-bottom: 8px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-gold); }
-        .action-box p { color: rgba(241, 250, 238, 0.6); font-size: 0.8rem; margin-bottom: 15px; }
+        .action-box h3 { margin-bottom: 8px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-gold); z-index: 2; }
+        .action-box p { color: rgba(241, 250, 238, 0.6); font-size: 0.8rem; margin-bottom: 15px; z-index: 2; }
+        .action-box form, .action-box a { z-index: 2; }
 
         .action-btn {
             background-color: var(--navy);
