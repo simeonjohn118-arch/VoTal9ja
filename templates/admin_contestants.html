@@ -147,7 +147,7 @@
         /* Checkbox styling */
         input[type="checkbox"] { accent-color: var(--red); width: 18px; height: 18px; cursor: pointer; }
 
-         .back-btn {
+        .back-btn {
             color: var(--ice);
             text-decoration: none;
             font-size: 0.8rem;
@@ -159,9 +159,106 @@
             left: 100%;
         }
         .back-btn:hover { background: var(--red); color: white; }
+
+        /* System Custom Toast Notifications */
+        .votal-toast-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 450px;
+            padding: 0 20px;
+            pointer-events: none;
+        }
+
+        .votal-toast {
+            background: var(--navy);
+            border: 1px solid var(--ice);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 16px 20px;
+            color: var(--pure-white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            pointer-events: auto;
+            animation: toastFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25);
+            transition: all 0.3s ease;
+        }
+
+        .votal-toast.toast-danger {
+            border-color: var(--bright-red);
+            background: #251322;
+        }
+
+        .votal-toast-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .votal-toast-content i {
+            font-size: 1.1rem;
+        }
+
+        .toast-info i { color: var(--ice); }
+        .toast-danger i { color: var(--bright-red); }
+
+        .votal-toast-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toast-action-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+        }
+
+        .toast-btn-confirm {
+            background: var(--red);
+            color: white;
+        }
+        .toast-btn-confirm:hover {
+            background: var(--bright-red);
+        }
+
+        .toast-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--ice);
+        }
+        .toast-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes toastFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast-fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+
+    <div id="toastContainer" class="votal-toast-container"></div>
 
     <div class="header">
         <h1>CONTESTANT REGISTRY</h1>
@@ -235,6 +332,67 @@
     </div>
 
     <script>
+        // System Toast Management System
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `votal-toast ${type === 'danger' ? 'toast-danger' : 'toast-info'}`;
+            
+            const icon = type === 'danger' ? 'fa-triangle-excursion' : 'fa-circle-info';
+            
+            toast.innerHTML = `
+                <div class="votal-toast-content">
+                    <i class="fa-solid ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('toast-fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        function showConfirmationToast(message, onConfirm) {
+            const container = document.getElementById('toastContainer');
+            
+            // Avoid opening multiple verification overrides at once
+            const existingConfirm = container.querySelector('.toast-danger');
+            if(existingConfirm) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'votal-toast toast-danger';
+            
+            toast.innerHTML = `
+                <div class="votal-toast-content">
+                    <i class="fa-solid fa-shield-virus"></i>
+                    <span>${message}</span>
+                </div>
+                <div class="votal-toast-actions">
+                    <button class="toast-action-btn toast-btn-cancel" id="toastCancel">Cancel</button>
+                    <button class="toast-action-btn toast-btn-confirm" id="toastConfirm">Confirm</button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            const closeToast = () => {
+                toast.classList.add('toast-fade-out');
+                setTimeout(() => toast.remove(), 300);
+            };
+
+            toast.querySelector('#toastConfirm').onclick = () => {
+                closeToast();
+                onConfirm();
+            };
+
+            toast.querySelector('#toastCancel').onclick = () => {
+                closeToast();
+            };
+        }
+
         function toggleAll(source) {
             let checkboxes = document.querySelectorAll('.contestant-check');
             checkboxes.forEach(cb => cb.checked = source.checked);
@@ -252,25 +410,27 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert("Registry Updated Successfully");
-                    location.reload();
+                    showToast("Registry Updated Successfully", "info", 2000);
+                    setTimeout(() => location.reload(), 1500);
                 }
             });
         }
 
         function bulkAction(action) {
             const selected = Array.from(document.querySelectorAll('.contestant-check:checked')).map(cb => cb.value);
-            if(selected.length === 0) return alert("SELECT TARGET NODES FIRST.");
+            if(selected.length === 0) return showToast("SELECT TARGET NODES FIRST.", "danger");
 
-            if(confirm("EXECUTE ADMINISTRATIVE OVERRIDE?")) {
+            showConfirmationToast("EXECUTE ADMINISTRATIVE OVERRIDE?", () => {
                 fetch("/admin/contestant_bulk", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ ids: selected, action: action })
                 })
                 .then(res => res.json())
-                .then(data => { if(data.success) location.reload(); });
-            }
+                .then(data => { 
+                    if(data.success) location.reload(); 
+                });
+            });
         }
     </script>
 </body>
