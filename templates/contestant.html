@@ -246,7 +246,7 @@
         /* Modern Premium Social Media Platform Options Drawer */
         .social-share-dropdown {
             position: absolute;
-            top: calc(100% + 8px);
+            bottom: calc(100% + 8px); /* Changed from top to display upward */
             left: 15px;
             background: rgba(11, 19, 43, 0.95);
             backdrop-filter: blur(15px);
@@ -258,7 +258,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             z-index: 99999; /* Boosted high to sit above any grid contents, forms, or actions */
             opacity: 0;
-            transform: translateY(-10px);
+            transform: translateY(10px); /* Changed to slide up into view */
             pointer-events: none;
             transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
