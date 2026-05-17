@@ -221,7 +221,76 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            position: relative; /* Added context structure for absolute position drop panel */
         }
+        
+        /* Modernized Active Trigger Button for Sharing options */
+        .share-btn-trigger {
+            background: transparent;
+            border: none;
+            color: var(--red);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .share-btn-trigger:hover {
+            background: rgba(230, 57, 70, 0.15);
+            transform: scale(1.1);
+        }
+
+        /* Modern Premium Social Media Platform Options Drawer */
+        .social-share-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 15px;
+            background: rgba(11, 19, 43, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(230, 57, 70, 0.4);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 99;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .social-share-dropdown.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .share-item-link {
+            text-decoration: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        .share-item-link:hover {
+            transform: translateY(-4px);
+            filter: brightness(1.2);
+        }
+
+        /* Native Identity Colors */
+        .platform-wa { background: #25D366; }
+        .platform-fb { background: #1877F2; }
+        .platform-x  { background: #000000; border: 1px solid rgba(255,255,255,0.2); }
+        .platform-tg { background: #0088cc; }
+
         .link-card input {
             flex: 1;
             padding: 12px;
@@ -330,7 +399,7 @@
     <header>
         <div class="logo-area">
             <a href="/">
-                <img src="{{ url_for('static', filename='image/logo 2.jpg') }}" alt="VoTal9ja Logo"; style="height: 20px; width: auto; vertical-align: middle;">
+                <img src="{{ url_for('static', filename='image/logo 2.jpg') }}" alt="VoTal9ja Logo" style="height: 20px; width: auto; vertical-align: middle;">
             </a>
         </div>
         <a href="/" class="logout"><i class="fas fa-power-off"></i> Sign Out</a>
@@ -354,7 +423,25 @@
         </div>
 
         <div class="link-card">
-            <i class="fas fa-share-alt" style="color:var(--red)"></i>
+            <button class="share-btn-trigger" id="contestantShareBtn" title="Share Voting Link">
+                <i class="fas fa-share-alt"></i>
+            </button>
+
+            <div class="social-share-dropdown" id="votingShareMenu">
+                <a href="#" class="share-item-link platform-wa" id="waShareLink" target="_blank" title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#" class="share-item-link platform-fb" id="fbShareLink" target="_blank" title="Share on Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="share-item-link platform-x" id="xShareLink" target="_blank" title="Share on X">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                <a href="#" class="share-item-link platform-tg" id="tgShareLink" target="_blank" title="Share on Telegram">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
+            </div>
+
             <input type="text" value="{{ url_for('vote_for_contestant', contestant_id=user.id, _external=True) }}" id="myVotingLink" readonly>
             <button onclick="copyVotingLink()" class="action-btn" style="width:auto; padding: 12px 25px;">Copy</button>
         </div>
@@ -400,6 +487,31 @@
     </div>
 
     <script>
+        // Setup Active Dynamic Social Link Architecture
+        const shareTrigger = document.getElementById('contestantShareBtn');
+        const shareDropdown = document.getElementById('votingShareMenu');
+        const votingLinkVal = document.getElementById('myVotingLink').value;
+
+        // Custom encoded template message to send with the links
+        const inviteMessage = encodeURIComponent("Hello! Check out my performance and vote for me in the VoTal9ja Talent Contest here: ");
+
+        // Build social dynamic URLs
+        document.getElementById('waShareLink').href = `https://api.whatsapp.com/send?text=${inviteMessage}${encodeURIComponent(votingLinkVal)}`;
+        document.getElementById('fbShareLink').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(votingLinkVal)}`;
+        document.getElementById('xShareLink').href = `https://twitter.com/intent/tweet?text=${inviteMessage}&url=${encodeURIComponent(votingLinkVal)}`;
+        document.getElementById('tgShareLink').href = `https://t.me/share/url?url=${encodeURIComponent(votingLinkVal)}&text=${inviteMessage}`;
+
+        // Toggle share menu click handle
+        shareTrigger.addEventListener('click', function(event) {
+            event.stopPropagation();
+            shareDropdown.classList.toggle('active');
+        });
+
+        // Close sharing interface smoothly if window target clicked elsewhere
+        document.addEventListener('click', function() {
+            shareDropdown.classList.remove('active');
+        });
+
         function copyVotingLink() {
             var copyText = document.getElementById("myVotingLink");
             copyText.select();
@@ -453,37 +565,37 @@
             }
         });
 
-document.getElementById('profilePicInput').onchange = function() {
-    let file = this.files[0];
-    if (file) {
-        let formData = new FormData();
-        // This MUST match the name in your request.files['profile_pic'] in app.py
-        formData.append('profile_pic', file); 
+        document.getElementById('profilePicInput').onchange = function() {
+            let file = this.files[0];
+            if (file) {
+                let formData = new FormData();
+                // This MUST match the name in your request.files['profile_pic'] in app.py
+                formData.append('profile_pic', file); 
 
-        fetch('/upload_profile_pic', { // Make sure this isn't 'upload_publicity_photo'
-    method: 'POST',
-    body: formData
-})
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Server responded with ' + response.status);
+                fetch('/upload_profile_pic', { // Make sure this isn't 'upload_publicity_photo'
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server responded with ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('profilePreview').src = data.image_url;
+                        alert('Success! Your profile photo is updated.');
+                    } else {
+                        alert('Upload failed: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Connection Error: ' + error.message);
+                });
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                document.getElementById('profilePreview').src = data.image_url;
-                alert('Success! Your profile photo is updated.');
-            } else {
-                alert('Upload failed: ' + data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Connection Error: ' + error.message);
-        });
-    }
-};
+        };
     </script>
 </body>
 </html>
