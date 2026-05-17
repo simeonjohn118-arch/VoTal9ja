@@ -48,6 +48,7 @@
         .catalog-box {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             height: 160px; width: 160px;
             border-radius: 20px;
             display: flex; flex-direction: column;
@@ -56,23 +57,62 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(255,255,255,0.1);
             position: relative; overflow: hidden;
+            z-index: 1;
+            padding: 2px; /* Leaves room for the tracking LED line */
+        }
+
+        /* LED Tracker Light Track Layers for Catalog Boxes */
+        .catalog-box::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(
+                transparent, 
+                var(--red), 
+                transparent, 
+                var(--navy), 
+                transparent, 
+                var(--red)
+            );
+            animation: boxLedRotate 4s linear infinite;
+            z-index: -2;
+        }
+
+        /* Inner background mask layer to isolate the LED stroke effect */
+        .catalog-box::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            background: rgba(29, 53, 87, 0.85); /* Enhances contrast over background image */
+            border-radius: 18px;
+            z-index: -1;
+            transition: background 0.3s;
+        }
+
+        @keyframes boxLedRotate {
+            100% { transform: rotate(360deg); }
         }
 
         .catalog-box:hover {
             transform: translateY(-10px);
-            background: rgba(230, 57, 70, 0.1);
-            border-color: var(--red);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-color: rgba(230, 57, 70, 0.5);
+            box-shadow: 0 15px 35px rgba(230, 57, 70, 0.25);
         }
 
-        .catalog-box i { font-size: 2.5rem; color: var(--text-gold); margin-bottom: 12px; transition: 0.3s; }
+        .catalog-box:hover::after {
+            background: rgba(230, 57, 70, 0.15); /* Seamless blend highlight on hover */
+        }
+
+        .catalog-box i { font-size: 2.5rem; color: var(--text-gold); margin-bottom: 12px; transition: 0.3s; z-index: 2; }
         .catalog-box:hover i { color: var(--red); transform: scale(1.1); }
-        .catalog-box span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(241, 250, 238, 0.7); }
+        .catalog-box span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(241, 250, 238, 0.7); z-index: 2; }
 
         .status-dot {
             position: absolute; top: 15px; right: 15px;
             width: 8px; height: 8px; background: #ffb703;
             border-radius: 50%; box-shadow: 0 0 10px #ffb703;
+            z-index: 3;
         }
 
         /* Glass Modal */
