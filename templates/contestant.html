@@ -256,7 +256,7 @@
             display: flex;
             gap: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 99;
+            z-index: 99999; /* Boosted high to sit above any grid contents, forms, or actions */
             opacity: 0;
             transform: translateY(-10px);
             pointer-events: none;
@@ -290,6 +290,8 @@
         .platform-fb { background: #1877F2; }
         .platform-x  { background: #000000; border: 1px solid rgba(255,255,255,0.2); }
         .platform-tg { background: #0088cc; }
+        .platform-tt { background: #000000; border: 1px solid rgba(255,255,255,0.3); } /* TikTok Accent */
+        .platform-sc { background: #FFFC00; color: #000000 !important; } /* Snapchat Brand Yellow */
 
         .link-card input {
             flex: 1;
@@ -440,6 +442,12 @@
                 <a href="#" class="share-item-link platform-tg" id="tgShareLink" target="_blank" title="Share on Telegram">
                     <i class="fab fa-telegram-plane"></i>
                 </a>
+                <a href="#" class="share-item-link platform-tt" id="ttShareLink" target="_blank" title="Share on TikTok">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="#" class="share-item-link platform-sc" id="scShareLink" target="_blank" title="Share on Snapchat">
+                    <i class="fab fa-snapchat-ghost"></i>
+                </a>
             </div>
 
             <input type="text" value="{{ url_for('vote_for_contestant', contestant_id=user.id, _external=True) }}" id="myVotingLink" readonly>
@@ -500,6 +508,10 @@
         document.getElementById('fbShareLink').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(votingLinkVal)}`;
         document.getElementById('xShareLink').href = `https://twitter.com/intent/tweet?text=${inviteMessage}&url=${encodeURIComponent(votingLinkVal)}`;
         document.getElementById('tgShareLink').href = `https://t.me/share/url?url=${encodeURIComponent(votingLinkVal)}&text=${inviteMessage}`;
+        
+        // Native fallback sharing protocols for Web TikTok / Snapchat
+        document.getElementById('ttShareLink').href = `https://www.tiktok.com/`;
+        document.getElementById('scShareLink').href = `https://www.snapchat.com/scan?attachmentUrl=${encodeURIComponent(votingLinkVal)}`;
 
         // Toggle share menu click handle
         shareTrigger.addEventListener('click', function(event) {
