@@ -54,21 +54,21 @@
         #about { background: #f1f1f1; }
         .about-content { display: block; gap: 50px; align-items: center; max-width: 1000px; margin: 0 auto; }
 
-        /* 4. Registration Form - UPDATED CINEMATIC HIGH-QUALITY DESIGN */
+        /* 4. Registration Form - FULLY TRANSPARENT GLASSMORPHISM */
         #register { 
-            background: linear-gradient(rgba(29, 53, 87, 0.85), rgba(230, 57, 70, 0.4)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200') no-repeat center/cover; 
+            background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(230, 57, 70, 0.35)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200') no-repeat center/cover; 
             background-attachment: fixed;
             text-align: center; 
             padding: 120px 5%;
         }
         .reg-card { 
             max-width: 550px; margin: 0 auto; padding: 50px 40px; 
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4); 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45); 
             border-radius: 25px; 
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.12); /* Fully transparent foundation */
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.22);
             position: relative;
         }
         .reg-card::before {
@@ -86,16 +86,19 @@
             color: #E63946; font-size: 0.9rem;
         }
         .reg-card label {
-            font-size: 0.75rem; font-weight: bold; color: #1d3557;
+            font-size: 0.75rem; font-weight: bold; color: #ffffff; /* Swapped to white for deep legibility on glass */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
             text-transform: uppercase; letter-spacing: 1px; margin-left: 5px;
         }
         .reg-card input, .reg-card select { 
             width: 100%; padding: 14px 15px 14px 40px; margin-top: 5px;
-            border: 1.5px solid #e1e8ef; border-radius: 10px; 
-            font-size: 1rem; transition: 0.3s; background: #fcfdfe;
+            border: 1.5px solid rgba(255, 255, 255, 0.25); border-radius: 10px; 
+            font-size: 1rem; transition: 0.3s; background: rgba(255, 255, 255, 0.9);
+            color: #1d3557; font-weight: 500;
         }
         .reg-card input:focus, .reg-card select:focus {
-            border-color: #E63946; outline: none; box-shadow: 0 0 10px rgba(230, 57, 70, 0.1);
+            border-color: #E63946; outline: none; box-shadow: 0 0 12px rgba(230, 57, 70, 0.3);
+            background: #ffffff;
         }
         .btn-pay { 
             width: 100%; padding: 18px; background: #E63946; color: white; 
@@ -217,27 +220,27 @@
             {% if maint_status %}
                 <div style="padding: 40px 20px; text-align: center;">
                     <i class="fas fa-tools" style="font-size: 3.5rem; color: #E63946; margin-bottom: 20px;"></i>
-                    <h2 style="color: #1d3557; letter-spacing: 1px;">SYSTEM MAINTENANCE</h2>
-                    <p style="color: #666; margin-top: 15px; font-weight: 500;">
+                    <h2 style="color: #ffffff; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">SYSTEM MAINTENANCE</h2>
+                    <p style="color: #eee; margin-top: 15px; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                         The VoTal9ja portal is currently undergoing optimization. 
                         Login and Registration are temporarily unavailable.
                     </p>
                 </div>
             {% elif not reg_status %}
                 <div style="padding: 40px 20px; text-align: center;">
-                    <i class="fas fa-calendar-times" style="font-size: 3.5rem; color: #1d3557; margin-bottom: 20px;"></i>
-                    <h2 style="color: #1d3557;">REGISTRATION CLOSED</h2>
-                    <p style="color: #666; margin-top: 15px;">
+                    <i class="fas fa-calendar-times" style="font-size: 3.5rem; color: #ffffff; margin-bottom: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>
+                    <h2 style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">REGISTRATION CLOSED</h2>
+                    <p style="color: #eee; margin-top: 15px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                         The window for the 2026 Maiden Edition has officially ended.
                     </p>
-                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-                    <p style="font-size: 0.9rem;">Already a member? 
-                        <a href="{{ url_for('login') }}" style="color: #E63946; font-weight: bold; text-decoration: none;">Access Contestant Dashboard</a>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <p style="font-size: 0.9rem; color: #fff;">Already a member? 
+                        <a href="{{ url_for('login') }}" style="color: #E63946; font-weight: bold; text-decoration: none; text-shadow: 0 1px 1px rgba(0,0,0,0.2);">Access Contestant Dashboard</a>
                     </p>
                 </div>
             {% else %}
-                <h2 style="color: #1d3557; font-size: 1.8rem;">Maiden Edition 2026</h2>
-                <p style="margin-bottom: 30px; color: #666; font-size: 0.9rem;">Entry Fee: <span style="color: #E63946; font-weight: bold; font-size: 1.1rem;">₦10,000</span></p>
+                <h2 style="color: #ffffff; font-size: 1.8rem; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">Maiden Edition 2026</h2>
+                <p style="margin-bottom: 30px; color: #eee; font-size: 0.9rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">Entry Fee: <span style="color: #E63946; font-weight: bold; font-size: 1.1rem; text-shadow: none;">₦10,000</span></p>
                 
                 <form action="/register" method="POST" onsubmit="return validatePasswords()">
                     <div class="input-group">
@@ -322,9 +325,9 @@
                     <button type="submit" class="btn-pay"><i class="fas fa-credit-card"></i> Pay ₦10,000 & Join Now</button>
                 </form>
 
-                <div style="margin-top: 25px; text-align: center; font-size: 0.95rem; color: #555;">
+                <div style="margin-top: 25px; text-align: center; font-size: 0.95rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                     Already part of the legacy? 
-                    <a href="{{ url_for('login') }}" style="color: #E63946; font-weight: bold; text-decoration: none;">Login here</a>
+                    <a href="{{ url_for('login') }}" style="color: #E63946; font-weight: bold; text-decoration: none; text-shadow: none;">Login here</a>
                 </div>
             {% endif %}
         </div>
