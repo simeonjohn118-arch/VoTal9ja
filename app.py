@@ -224,7 +224,7 @@ def logout():
     flash("Successfully logged out.")
     return redirect(url_for('login'))
 
-@app.route('/ranking')
+@app.route('/stats')
 def stats():
     rankings = User.query.filter_by(is_paid=True).order_by(User.votes.desc()).all()
     return render_template('ranking.html', rankings=rankings, active_contest=True)
@@ -429,6 +429,7 @@ def check_for_maintenance():
         # You could create a maintenance.html and return it here
         # return render_template('maintenance.html'), 503
         pass
+
 # Make sure this folder exists in your project!
 UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -522,6 +523,7 @@ def payment_instructions(tx_id):
     transaction = db.session.get(VoteTransaction, tx_id)
     contestant = db.session.get(User, transaction.contestant_id)
     return render_template('payment_instructions.html', tx=transaction, contestant=contestant)
+
 @app.route('/rules')
 def rules():
     """Renders the official competition guidelines and rules."""
@@ -530,17 +532,11 @@ def rules():
 @app.route('/ranking')
 def ranking():
     """
-    Fetches qualified contestants ordered by vote count 
-    and renders the live leaderboard.
+    Fetches registered contestants ordered sequentially 
+    from the highest vote count down to the lowest.
     """
-    # Assuming your model is named Contestant and has fields like 'votes' and 'status'
-    # Adjust 'Contestant.votes.desc()' if your database field is named differently (e.g., vote_count)
-    try:
-        leaderboard = Contestant.query.filter_by(status='Qualified').order_by(Contestant.votes.desc()).all()
-    except NameError:
-        # Fallback if your database configuration/model name differs
-        leaderboard = []
-
+    # Pulls paid contestants from the User model and orders them highest -> lowest
+    leaderboard = User.query.filter_by(is_paid=True).order_by(User.votes.desc()).all()
     return render_template('ranking.html', leaderboard=leaderboard)
 
 if __name__ == "__main__":
