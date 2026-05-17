@@ -386,6 +386,28 @@
                 return true; 
             }
         }
+
+        // AUTOMATIC IMAGE SLIDER LOGIC (5-second intervals right-to-left)
+        const slider = document.querySelector('.slider-container');
+        
+        if (slider) {
+            setInterval(() => {
+                const firstCard = slider.querySelector('.talent-card');
+                if (firstCard) {
+                    // Calculate the width of one card shift (card width + gap spacing)
+                    const cardShiftWidth = firstCard.offsetWidth + 20; 
+                    
+                    // Check if we are close to the maximum scrollable width limit
+                    if (slider.scrollLeft + slider.offsetWidth >= slider.scrollWidth - 10) {
+                        // Loop directly back to the very start smoothly
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        // Advance right-to-left smoothly by shifting one item over
+                        slider.scrollBy({ left: cardShiftWidth, behavior: 'smooth' });
+                    }
+                }
+            }, 5000); // 5000 milliseconds = 5 seconds
+        }
     </script>
 </body>
 </html>
