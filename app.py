@@ -224,7 +224,7 @@ def logout():
     flash("Successfully logged out.")
     return redirect(url_for('login'))
 
-@app.route('/stats')
+@app.route('/ranking')
 def stats():
     rankings = User.query.filter_by(is_paid=True).order_by(User.votes.desc()).all()
     return render_template('ranking.html', rankings=rankings, active_contest=True)
