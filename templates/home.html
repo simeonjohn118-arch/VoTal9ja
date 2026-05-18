@@ -54,13 +54,27 @@
         #about { background: #f1f1f1; }
         .about-content { display: block; gap: 50px; align-items: center; max-width: 1000px; margin: 0 auto; }
 
-        /* 4. Registration Form - FULLY TRANSPARENT GLASSMORPHISM WITH AUTOMATED LED LIGHT BORDER */
+        /* 4. Registration Form - UPDATED BACKGROUND STYLE MATCHED TO LOGIN.HTML */
         #register { 
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #111827 100%); 
+            background: linear-gradient(rgba(11, 19, 43, 0.75), rgba(11, 19, 43, 0.85)), url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1920&q=80'); 
+            background-size: cover;
+            background-position: center;
             background-attachment: fixed;
             text-align: center; 
             padding: 120px 5%;
             position: relative;
+        }
+
+        /* Ambient glowing background behind card - Exactly matched to login.html body::before */
+        #register::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(230, 57, 70, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         /* LED Moving Border Asset Track Outer Shell Layer */
