@@ -3,24 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoTal9ja | Contestant Registry</title>
+    <title>VoTal9ja | Contestant Registry Suite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* VoTal9ja Professional Branding */
+        /* VoTal9ja Premium Stage Branding & LED Glows */
         :root {
-            --bg: #0b132b;
-            --card-bg: rgba(29, 53, 87, 0.5);
-            --navy: #1d3557;
-            --red: #E63946;
-            --bright-red: #ff4d5a;
-            --ice: #a8dadc;
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.65);
+            --navy: #1f2937;
+            --red: #dc2626;
+            --bright-red: #ef4444;
+            --gold: #f59e0b;
+            --ice: #9ca3af;
             --pure-white: #ffffff;
+            
+            /* Custom Neon LED Light Piping Values */
+            --led-gold: 0 0 15px rgba(245, 158, 11, 0.25), inset 0 0 10px rgba(245, 158, 11, 0.05);
+            --led-red: 0 0 15px rgba(220, 38, 38, 0.25), inset 0 0 10px rgba(220, 38, 38, 0.05);
+            --led-input: 0 0 10px rgba(245, 158, 11, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
 
         body {
-            background: radial-gradient(circle at top right, #1d3557, #050a18);
+            /* Clean, Pitch-Dark Elite Stage Canvas with Top-Left Neon Green Downbeam & Grid Lines */
+            background: 
+                radial-gradient(circle at 15% 0%, rgba(0, 230, 118, 0.15) 0%, transparent 35%),
+                linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px) 0 0 / 40px 40px,
+                linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px) 0 0 / 40px 40px,
+                linear-gradient(to bottom, #070c14 0%, #020408 100%);
+            background-attachment: fixed;
             color: var(--pure-white);
             min-height: 100vh;
             padding: 50px 20px;
@@ -32,22 +44,46 @@
         /* Header Section */
         .header { text-align: center; margin-bottom: 50px; }
         .header h1 {
-            font-size: 2.2rem; letter-spacing: 5px; text-transform: uppercase;
+            font-size: 2.6rem; letter-spacing: 6px; text-transform: uppercase;
             color: var(--pure-white); 
-            text-shadow: 0 0 20px rgba(230, 57, 70, 0.7);
+            text-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+            font-weight: 900;
         }
-        .header p { color: var(--ice); font-size: 0.85rem; margin-top: 8px; font-weight: 700; letter-spacing: 2px; }
+        .header p { color: var(--gold); font-size: 0.85rem; margin-top: 8px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* Container & Registry Card */
+        /* Container Section Titles */
+        .section-title {
+            width: 100%;
+            max-width: 1200px;
+            color: var(--pure-white);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            margin: 40px 0 20px 0;
+            border-left: 4px solid var(--gold);
+            padding-left: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Container & Registry Card With Soft LED Light */
         .registry-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 20px;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 16px;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
             padding: 35px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            box-shadow: var(--led-gold); /* Soft Gold LED Piping */
+            margin-bottom: 20px;
+        }
+
+        .registry-card.active-registry {
+            border: 1px solid rgba(220, 38, 38, 0.25);
+            box-shadow: var(--led-red); /* Soft Red LED Piping */
         }
 
         .registry-actions {
@@ -56,7 +92,7 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(168, 218, 220, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         /* Table Styling */
@@ -64,24 +100,28 @@
         table { width: 100%; border-collapse: collapse; text-align: left; }
 
         th {
-            color: var(--ice);
+            color: var(--gold);
             text-transform: uppercase;
             font-size: 0.8rem;
             letter-spacing: 2px;
             padding: 15px;
-            border-bottom: 2px solid var(--red);
+            border-bottom: 2px solid rgba(245, 158, 11, 0.4);
+        }
+        
+        .active-registry th {
+            color: var(--bright-red);
+            border-bottom: 2px solid rgba(220, 38, 38, 0.4);
         }
 
-        td { padding: 18px 15px; border-bottom: 1px solid rgba(255,255,255,0.08); vertical-align: middle; color: white; }
+        td { padding: 18px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; color: white; }
+        tr:hover { background: rgba(255,255,255,0.03); }
 
-        tr:hover { background: rgba(255,255,255,0.05); }
-
-        /* Inputs - Pure White Text */
+        /* Inputs - Pure White Text with Subtle LED Focus Glow */
         .edit-input {
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.15);
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px 14px;
             color: white;
             width: 100%;
             transition: all 0.3s ease;
@@ -90,170 +130,119 @@
         }
 
         .edit-input:focus { 
-            background: rgba(255,255,255,0.12);
-            border-color: var(--ice); 
-            box-shadow: 0 0 15px rgba(168, 218, 220, 0.3); 
+            background: rgba(255,255,255,0.08);
+            border-color: var(--gold); 
+            box-shadow: var(--led-input); 
+        }
+
+        .edit-input:disabled {
+            background: rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
         }
 
         /* Status & Badges */
         .badge {
             font-size: 0.7rem; font-weight: 800; padding: 6px 14px;
             border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;
+            display: inline-block;
         }
-        .badge-qualified { background: #1b4332; color: #52b788; border: 1px solid #52b788; }
-        .badge-disqualified { background: #4e161a; color: #ff7b86; border: 1px solid #ff7b86; }
+        .badge-qualified { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.15); }
+        .badge-disqualified { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.15); }
 
-        /* Buttons */
+        /* Action Controls Buttons Styling */
         .votal-btn {
-            background: transparent; color: white; border: 1px solid var(--ice);
-            padding: 10px 22px; border-radius: 8px; font-weight: bold;
+            background: transparent; color: white; border: 1px solid var(--gold);
+            padding: 10px 20px; border-radius: 8px; font-weight: bold;
             text-transform: uppercase; cursor: pointer; transition: 0.3s; font-size: 0.8rem;
             letter-spacing: 1px;
+            display: inline-flex; align-items: center; gap: 8px;
         }
+        .votal-btn:hover { background: var(--gold); color: var(--bg); transform: translateY(-2px); box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
 
-        .votal-btn:hover { background: var(--ice); color: var(--bg); transform: translateY(-2px); }
+        .btn-danger { background: rgba(220, 38, 38, 0.2); border-color: var(--red); }
+        .btn-danger:hover { background: var(--red); color: white; box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
 
-        .btn-danger { background: var(--red); border-color: transparent; }
-        .btn-danger:hover { background: var(--bright-red); box-shadow: 0 0 20px rgba(230, 57, 70, 0.5); color: white; }
+        .btn-action-sm { padding: 8px 12px; font-size: 0.75rem; border-radius: 6px; }
+        .btn-warning { border-color: var(--gold); color: var(--gold); background: rgba(245, 158, 11, 0.05); }
+        .btn-warning:hover { background: var(--gold); color: var(--bg); }
 
         /* Pool Grid Section */
-        .pool-section { margin-top: 50px; width: 100%; max-width: 1100px; }
+        .pool-section { margin-top: 40px; width: 100%; max-width: 1200px; }
         .pool-section h3 {
             color: var(--pure-white); text-transform: uppercase; letter-spacing: 3px;
-            font-size: 1.1rem; margin-bottom: 25px; border-left: 5px solid var(--ice); padding-left: 15px;
+            font-size: 1.1rem; margin-bottom: 25px; border-left: 4px solid var(--bright-red); padding-left: 15px;
         }
 
         .qualified-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
         }
 
         .candidate-node {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
             padding: 25px; border-radius: 12px;
             text-align: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.02);
         }
 
         .candidate-node:hover { 
-            background: rgba(255,255,255,0.08);
-            border-color: var(--ice); 
+            background: rgba(255,255,255,0.06);
+            border-color: var(--gold); 
             transform: translateY(-5px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-shadow: var(--led-input);
         }
-        .candidate-node i { color: var(--ice); margin-bottom: 12px; display: block; font-size: 1.4rem; }
+        .candidate-node i { color: var(--gold); margin-bottom: 12px; display: block; font-size: 1.4rem; }
         .candidate-node span { font-weight: 600; font-size: 0.9rem; color: white; }
 
-        /* Checkbox styling */
-        input[type="checkbox"] { accent-color: var(--red); width: 18px; height: 18px; cursor: pointer; }
+        /* Form Custom Elements */
+        input[type="checkbox"] { accent-color: var(--gold); width: 18px; height: 18px; cursor: pointer; }
 
         .back-btn {
-            color: var(--ice);
-            text-decoration: none;
-            font-size: 0.8rem;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-            position: relative;
-            left: 100%;
+            color: var(--gold); text-decoration: none; font-size: 0.8rem;
+            background: rgba(255,255,255,0.04); padding: 8px 18px; border-radius: 8px;
+            transition: 0.3s; border: 1px solid rgba(245, 158, 11, 0.2);
         }
-        .back-btn:hover { background: var(--red); color: white; }
+        .back-btn:hover { background: var(--gold); color: var(--bg); box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
 
         /* System Custom Toast Notifications */
         .votal-toast-container {
-            position: fixed;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 450px;
-            padding: 0 20px;
-            pointer-events: none;
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 9999;
+            display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 450px; padding: 0 20px; pointer-events: none;
         }
 
         .votal-toast {
-            background: var(--navy);
-            border: 1px solid var(--ice);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 16px 20px;
-            color: var(--pure-white);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            pointer-events: auto;
-            animation: toastFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25);
-            transition: all 0.3s ease;
+            background: #111827; border: 1px solid var(--gold); box-shadow: var(--led-gold);
+            border-radius: 10px; padding: 16px 20px; color: var(--pure-white);
+            display: flex; align-items: center; justify-content: space-between; gap: 15px;
+            pointer-events: auto; animation: toastFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25); transition: all 0.3s ease;
         }
 
-        .votal-toast.toast-danger {
-            border-color: var(--bright-red);
-            background: #251322;
-        }
-
-        .votal-toast-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .votal-toast-content i {
-            font-size: 1.1rem;
-        }
-
-        .toast-info i { color: var(--ice); }
+        .votal-toast.toast-danger { border-color: var(--bright-red); background: #1f1214; box-shadow: var(--led-red); }
+        .votal-toast-content { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 500; }
+        .votal-toast-content i { font-size: 1.1rem; }
+        .toast-info i { color: var(--gold); }
         .toast-danger i { color: var(--bright-red); }
-
-        .votal-toast-actions {
-            display: flex;
-            gap: 8px;
-        }
+        .votal-toast-actions { display: flex; gap: 8px; }
 
         .toast-action-btn {
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.2s;
-            border: none;
+            padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; cursor: pointer; transition: 0.2s; border: none;
         }
 
-        .toast-btn-confirm {
-            background: var(--red);
-            color: white;
-        }
-        .toast-btn-confirm:hover {
-            background: var(--bright-red);
-        }
-
-        .toast-btn-cancel {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--ice);
-        }
-        .toast-btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+        .toast-btn-confirm { background: var(--red); color: white; }
+        .toast-btn-confirm:hover { background: var(--bright-red); }
+        .toast-btn-cancel { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .toast-btn-cancel:hover { background: rgba(255, 255, 255, 0.2); }
 
         @keyframes toastFadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .toast-fade-out {
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
-        }
+        .toast-fade-out { opacity: 0; transform: translateY(-20px); pointer-events: none; }
     </style>
 </head>
 <body>
@@ -261,19 +250,26 @@
     <div id="toastContainer" class="votal-toast-container"></div>
 
     <div class="header">
-        <h1>CONTESTANT REGISTRY</h1>
-        <p>SYSTEM MODERATION & ACCESS CONTROL</p>
-         <a href="{{ url_for('admin_master') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Console</a>
+        <h1>CONTESTANT REGISTRY SUITE</h1>
+        <p>System Moderation & Historical Access Control</p>
+        <div style="margin-top: 15px;">
+            <a href="{{ url_for('admin_master') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Administrative Console</a>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span>1. Master Archive (All Registered Records)</span>
+        <span style="font-size: 0.75rem; color: var(--gold); font-family: monospace;">[ MODE: STATIC LOG ]</span>
     </div>
 
     <div class="registry-card">
         <div class="registry-actions">
             <div>
-                <span style="font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; color: var(--ice);">Database Node:</span>
-                <span style="font-weight: 800; color: white; margin-left: 5px;">VOTAL_ADMIN_MAIN</span>
+                <span style="font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; color: var(--gold);">Archival Node:</span>
+                <span style="font-weight: 800; color: white; margin-left: 5px;">VOTAL_HISTORICAL_MASTER</span>
             </div>
             <button onclick="bulkAction('disqualify')" class="votal-btn btn-danger">
-                <i class="fa-solid fa-user-slash"></i> Terminate Selected
+                <i class="fa-solid fa-user-slash"></i> Terminate Selected Contenders
             </button>
         </div>
 
@@ -284,9 +280,9 @@
                         <th><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
                         <th>User Identity</th>
                         <th>Network Email</th>
-                        <th>Access Hash (New Password)</th>
-                        <th>Clearance</th>
-                        <th>Action</th>
+                        <th>Clearance Status</th>
+                        <th>System Access Rules</th>
+                        <th>Save</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -296,17 +292,19 @@
                         <td>
                             <input type="text" class="edit-input" value="{{ c.fullname }}" id="name-{{ c.id }}">
                         </td>
-                        <td style="color: var(--ice); font-weight: 500;">{{ c.email }}</td>
-                        <td>
-                            <input type="text" class="edit-input" value="{{ c.password }}" id="pass-{{ c.id }}" placeholder="Enter new password">
-                        </td>
+                        <td style="color: var(--gold); font-weight: 500;">{{ c.email }}</td>
                         <td>
                             <span class="badge {{ 'badge-qualified' if c.status == 'Qualified' else 'badge-disqualified' }}">
                                 {{ c.status }}
                             </span>
                         </td>
                         <td>
-                            <button class="votal-btn" onclick="saveDetails('{{ c.id }}')">
+                            <button class="votal-btn btn-action-sm btn-warning" onclick="resetToDefaultPassword('{{ c.id }}')">
+                                <i class="fa-solid fa-key"></i> Reset to 123456
+                            </button>
+                        </td>
+                        <td>
+                            <button class="votal-btn btn-action-sm" onclick="saveDetails('{{ c.id }}')">
                                 <i class="fa-solid fa-save"></i>
                             </button>
                         </td>
@@ -317,8 +315,60 @@
         </div>
     </div>
 
+
+    <div class="section-title">
+        <span>2. Active Contenders Registry (Self-Updating)</span>
+        <span style="font-size: 0.75rem; color: var(--bright-red); font-family: monospace;">[ MODE: DYNAMIC LIVE RUNTIME ]</span>
+    </div>
+
+    <div class="registry-card active-registry">
+        <div class="registry-actions">
+            <div>
+                <span style="font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; color: var(--bright-red);">Filtered Live Pipeline:</span>
+                <span style="font-weight: 800; color: white; margin-left: 5px;">VOTAL_ACTIVE_PIPELINE</span>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Identity</th>
+                        <th>Network Email</th>
+                        <th>Access Configuration</th>
+                        <th>Live Clearance Badge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in all_c %}
+                        {% if c.status == 'Qualified' %}
+                        <tr>
+                            <td style="font-weight: 600; letter-spacing: 0.5px;">{{ c.fullname }}</td>
+                            <td style="color: rgba(255, 255, 255, 0.75);">{{ c.email }}</td>
+                            <td>
+                                <input type="text" class="edit-input" value="{{ c.password }}" id="pass-{{ c.id }}" placeholder="Configured Pass Hash" disabled>
+                            </td>
+                            <td>
+                                <span class="badge badge-qualified">
+                                    <i class="fa-solid fa-circle-check"></i> {{ c.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; opacity: 0.4; font-family: monospace; padding: 30px;">
+                                [ ALERT: NO QUALIFIED ENTITIES IN ACTIVE PIPELINE ]
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="pool-section">
-        <h3>Verified Candidates Pool</h3>
+        <h3>Verified Candidates Node Cluster</h3>
         <div class="qualified-grid">
             {% for q in qualified %}
                 <div class="candidate-node">
@@ -326,7 +376,7 @@
                     <span>{{ q.fullname }}</span>
                 </div>
             {% else %}
-                <div style="opacity: 0.5; font-size: 0.9rem; font-family: monospace;">[ STATUS: NO VERIFIED NODES DETECTED ]</div>
+                <div style="opacity: 0.5; font-size: 0.9rem; font-family: monospace; padding-left: 5px;">[ STATUS: NO ACTIVE VERIFIED NODES DETECTED ]</div>
             {% endfor %}
         </div>
     </div>
@@ -357,8 +407,6 @@
 
         function showConfirmationToast(message, onConfirm) {
             const container = document.getElementById('toastContainer');
-            
-            // Avoid opening multiple verification overrides at once
             const existingConfirm = container.querySelector('.toast-danger');
             if(existingConfirm) return;
 
@@ -398,19 +446,39 @@
             checkboxes.forEach(cb => cb.checked = source.checked);
         }
 
+        // Administrative Master-Key Password Overrider Function
+        function resetToDefaultPassword(id) {
+            showConfirmationToast("OVERWRITE ACCESS HASH TO DEFAULT '123456'?", () => {
+                // Instantly routes payload out to the matching Flask endpoint
+                fetch("/admin/update_contestant", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id, password: "123456" })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        showToast("Credential Flashed to Default: 123456", "info", 2500);
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast("Administrative Reset Failed", "danger", 2500);
+                    }
+                });
+            });
+        }
+
         function saveDetails(id) {
             const name = document.getElementById(`name-${id}`).value;
-            const pass = document.getElementById(`pass-${id}`).value;
 
             fetch("/admin/update_contestant", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: id, fullname: name, password: pass })
+                body: JSON.stringify({ id: id, fullname: name })
             })
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    showToast("Registry Updated Successfully", "info", 2000);
+                    showToast("Registry Identity Saved", "info", 2000);
                     setTimeout(() => location.reload(), 1500);
                 }
             });
@@ -420,7 +488,7 @@
             const selected = Array.from(document.querySelectorAll('.contestant-check:checked')).map(cb => cb.value);
             if(selected.length === 0) return showToast("SELECT TARGET NODES FIRST.", "danger");
 
-            showConfirmationToast("EXECUTE ADMINISTRATIVE OVERRIDE?", () => {
+            showConfirmationToast("EXECUTE ADMINISTRATIVE OVERRIDE DISQUALIFICATION?", () => {
                 fetch("/admin/contestant_bulk", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -428,7 +496,10 @@
                 })
                 .then(res => res.json())
                 .then(data => { 
-                    if(data.success) location.reload(); 
+                    if(data.success) {
+                        showToast("Disqualification Overrides Finished.", "info", 2000);
+                        setTimeout(() => location.reload(), 1000);
+                    }
                 });
             });
         }
