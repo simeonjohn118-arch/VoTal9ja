@@ -10,29 +10,46 @@
             --primary: #E63946;
             --navy: #1d3557;
             --overlay: rgba(255, 255, 255, 0.12); /* Matched to the transparent registration foundation */
+            --bg: #0b132b;
+            --accent: #457b9d;
+            --text-gold: #f1faee;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(rgba(29, 53, 87, 0.85), rgba(230, 57, 70, 0.4)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200') no-repeat center/cover;
-            background-attachment: fixed;
+            background: linear-gradient(rgba(11, 19, 43, 0.75), rgba(11, 19, 43, 0.85)), url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
             height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* LED Moving Border Asset Track Outer Shell Layer */
+        /* Ambient glowing background behind card - Exactly matched to Admin */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(230, 57, 70, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* LED Moving Border Asset Track Outer Shell Layer - Formatted to Match Admin Depth Parameters */
         .login-card-wrapper {
             position: relative;
             width: 100%;
             max-width: 420px;
             padding: 3px; /* Controls exact density/thickness of the tracking LED line */
-            border-radius: 20px;
+            border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 25px rgba(230, 57, 70, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(230, 57, 70, 0.15);
             z-index: 1;
         }
 
@@ -47,7 +64,7 @@
                 transparent, 
                 var(--primary), 
                 transparent, 
-                var(--navy), 
+                var(--accent), 
                 transparent, 
                 var(--primary)
             );
@@ -59,24 +76,27 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Glassmorphism Card Matching Registration Style */
+        /* Glassmorphism Card Surface - Modified to inherit fully transparent administration backdropping */
         .login-card {
-            background: var(--overlay);
-            backdrop-filter: blur(16px) saturate(120%); /* Synced filter properties */
-            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            background: transparent; /* Fully transparent container surface matching Admin */
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             width: 100%;
             padding: 50px 40px;
-            border-radius: 17px; /* Marginally scaled to clear inner wrapper frame radius */
+            border-radius: 27px; /* Subtly shorter to clear inner wrapper arc */
             text-align: center;
             position: relative;
-            overflow: hidden;
         }
 
+        /* Background occlusion sheet behind text to secure readability - Extracted from Admin */
         .login-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 5px;
-            background: linear-gradient(to right, var(--primary), var(--navy));
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 19, 43, 0.45);
+            border-radius: 27px;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .brand-logo {
