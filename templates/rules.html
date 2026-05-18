@@ -6,24 +6,27 @@
     <title>VoTal9ja | Official Rules & Regulations</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Professional Dark Theme */
+        /* Professional Dark Theme with Royal Warm Palace Background */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         
         body { 
-            background: radial-gradient(circle at top right, #1d3557, #0a111a); 
+            background: linear-gradient(135deg, rgba(13, 13, 17, 0.92), rgba(26, 17, 5, 0.88)), 
+                        url('https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed; 
+            background-size: cover;
             color: #ffffff; 
             line-height: 1.7;
             min-height: 100vh;
         }
 
         header {
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background-color: rgba(15, 15, 20, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -46,41 +49,89 @@
 
         .handbook-header h1 {
             font-size: 2.5rem;
-            color: #E63946;
+            color: #ffffff;
+            font-weight: 800;
             margin-bottom: 10px;
             text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .handbook-header p {
-            color: rgba(255, 255, 255, 0.6);
+            color: #E63946;
+            font-weight: bold;
             font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
-        /* Rule Sections */
+        /* Transparent Glass Rule Sections with Soft LED Moving Border */
         .rule-card {
-            background: rgba(255, 255, 255, 0.03);
+            position: relative;
+            background: rgba(15, 15, 20, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-radius: 12px;
             padding: 30px;
             margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             transition: 0.3s;
+            z-index: 1;
         }
 
-        .rule-card:hover {
-            border-color: #E63946;
-            background: rgba(255, 255, 255, 0.05);
+        /* Continuous Soft LED Glow Track Behind Border */
+        .rule-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 30%,
+                rgba(179, 146, 18, 0.4) 45%,
+                rgba(153, 27, 27, 0.4) 55%,
+                transparent 70%
+            );
+            animation: led-rotate 6s linear infinite;
+            z-index: -2;
+        }
+
+        /* Inner Transparent Crystal Mask */
+        .rule-card::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(18, 18, 24, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 11px;
+            z-index: -1;
+            transition: background 0.3s ease;
+        }
+
+        .rule-card:hover::after {
+            background: rgba(22, 22, 30, 0.65);
+        }
+
+        /* LED Rotation Settings */
+        @keyframes led-rotate {
+            100% { transform: rotate(360deg); }
         }
 
         .rule-card h3 {
-            color: #E63946;
+            color: #ffffff;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             font-size: 1.4rem;
+            font-weight: 700;
         }
 
         .rule-card h3 span {
-            background: #1d3557;
+            background: #E63946;
             color: #fff;
             width: 35px;
             height: 35px;
@@ -90,6 +141,8 @@
             border-radius: 50%;
             margin-right: 15px;
             font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
         }
 
         .rule-card ul {
@@ -111,7 +164,7 @@
             font-weight: 900;
             position: absolute;
             left: 0;
-            color: #E63946;
+            color: #ffd700; /* Royal gold marker icon */
         }
 
         .footer-actions {
@@ -130,19 +183,21 @@
             font-size: 0.9rem;
             transition: 0.3s;
             cursor: pointer;
+            backdrop-filter: blur(10px);
         }
 
-        .btn-print { border: 2px solid #E63946; color: #fff; }
-        .btn-print:hover { background: #E63946; }
+        .btn-print { border: 2px solid #ffffff; color: #fff; background: rgba(255, 255, 255, 0.05); }
+        .btn-print:hover { background: #ffffff; color: #0d0d11; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
 
-        .btn-back { background: #E63946; color: #fff; }
-        .btn-back:hover { background: #fff; color: #E63946; }
+        .btn-back { background: #E63946; color: #fff; border: 2px solid #E63946; }
+        .btn-back:hover { background: transparent; color: #E63946; box-shadow: 0 10px 20px rgba(230, 57, 70, 0.2); }
 
         /* Print Media Styles */
         @media print {
             body { background: #fff; color: #000; }
             header, .footer-actions { display: none; }
             .rule-card { border: 1px solid #ddd; background: #fff; break-inside: avoid; }
+            .rule-card::before, .rule-card::after { display: none; }
             .rule-card h3, .rule-card ul li::before { color: #000; }
             .container { padding: 0; max-width: 100%; }
         }
