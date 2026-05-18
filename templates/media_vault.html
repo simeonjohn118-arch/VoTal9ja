@@ -6,67 +6,149 @@
     <title>VoTal9ja | Media Vault</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* VoTal9ja Branding Core */
+        /* VoTal9ja Premium Branding Core */
         :root {
-            --bg: #0b132b;
-            --card-bg: rgba(29, 53, 87, 0.5);
-            --navy: #1d3557;
+            --bg: #07070a;
+            --card-bg: rgba(10, 10, 14, 0.45);
             --red: #E63946;
-            --ice: #a8dadc;
+            --gold: #ffd700;
             --pure-white: #ffffff;
+            --text-dim: #cbd5e1;
+            --border: rgba(255, 255, 255, 0.07);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
 
         body {
-            background: radial-gradient(circle at top right, #1d3557, #050a18);
+            background: linear-gradient(135deg, rgba(7, 7, 10, 0.95), rgba(24, 14, 4, 0.93)), 
+                        url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
             color: var(--pure-white);
             min-height: 100vh;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 50px 5%;
         }
 
-        .header { text-align: center; margin-bottom: 40px; }
+        .header { text-align: center; margin-bottom: 50px; }
         .header h1 {
-            font-size: 2.2rem; letter-spacing: 5px; text-transform: uppercase;
+            font-size: 2.6rem; font-weight: 900; letter-spacing: 5px; text-transform: uppercase;
             color: var(--pure-white); 
-            text-shadow: 0 0 20px rgba(230, 57, 70, 0.7);
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
         }
-        .header p { color: var(--ice); font-size: 0.85rem; margin-top: 8px; font-weight: 700; letter-spacing: 2px; }
+        .header p { color: var(--gold); font-size: 0.9rem; margin-top: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* Media Grid System */
-        .media-container {
+        /* Vault Directory Folder Layout */
+        .vault-section {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .contestant-folder {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            z-index: 1;
+        }
+
+        /* Continuous Rotating Soft LED Track */
+        .contestant-folder::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 40%,
+                rgba(255, 215, 0, 0.25) 48%,
+                rgba(230, 57, 70, 0.25) 52%,
+                transparent 60%
+            );
+            animation: led-rotate 8s linear infinite;
+            z-index: -2;
+        }
+
+        /* Inner Transparent Glass Core Mask */
+        .contestant-folder::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(10, 10, 14, 0.82);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 19px;
+            z-index: -1;
+        }
+
+        @keyframes led-rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .folder-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--pure-white);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 18px;
+            margin-bottom: 25px;
+        }
+
+        .folder-title i {
+            color: var(--gold);
+            font-size: 1.7rem;
+            filter: drop-shadow(0 2px 10px rgba(255, 215, 0, 0.5));
+        }
+
+        .folder-title span {
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-left: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Nested Directory Asset Grid */
+        .media-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
 
         .media-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 14px;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
         }
 
         .media-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--ice);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            transform: translateY(-4px);
+            border-color: rgba(255, 215, 0, 0.6);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
         }
 
-        /* Preview Area */
+        /* Preview Viewports */
         .preview-box {
             width: 100%;
-            height: 200px;
-            background: #000;
+            height: 165px;
+            background: #020203;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -81,76 +163,78 @@
 
         .audio-placeholder {
             text-align: center;
-            color: var(--ice);
+            color: var(--gold);
         }
+        .audio-placeholder i { font-size: 2.6rem; margin-bottom: 8px; display: block; filter: drop-shadow(0 2px 6px rgba(255,215,0,0.2)); }
+        .audio-placeholder span { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; }
 
-        .audio-placeholder i { font-size: 3rem; margin-bottom: 10px; display: block; }
-
-        /* Card Details */
         .media-info {
-            padding: 20px;
-            background: rgba(11, 19, 43, 0.6);
+            padding: 18px;
+            background: rgba(5, 5, 8, 0.3);
+            border-bottom: 1px solid var(--border);
         }
 
         .contestant-name {
-            font-weight: 800;
-            font-size: 1rem;
+            font-weight: 700;
+            font-size: 0.95rem;
             color: var(--pure-white);
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         .file-meta {
             font-size: 0.75rem;
-            color: var(--ice);
+            color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
+            opacity: 0.8;
         }
 
-        /* Audio Player Styling */
         audio {
             width: 100%;
-            height: 35px;
+            height: 32px;
             margin-top: 10px;
-            filter: invert(100%) hue-rotate(180deg) brightness(1.5);
+            filter: invert(100%) hue-rotate(180deg) brightness(1.4);
         }
 
-        /* Action Buttons */
+        /* Card Controls */
         .media-actions {
             display: flex;
-            padding: 15px 20px;
-            gap: 10px;
-            background: rgba(0,0,0,0.2);
+            padding: 12px 18px;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.25);
         }
 
         .votal-btn {
             flex: 1;
             background: transparent;
-            color: white;
-            border: 1px solid var(--ice);
-            padding: 8px;
+            color: var(--pure-white);
+            border: 1px solid var(--text-dim);
+            padding: 9px;
             border-radius: 8px;
-            font-weight: bold;
+            font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
             font-size: 0.7rem;
             text-align: center;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .votal-btn:hover { background: var(--ice); color: var(--bg); }
+        .votal-btn:hover { background: var(--pure-white); color: #07070a; border-color: var(--pure-white); }
         .btn-red { border-color: var(--red); color: var(--red); }
-        .btn-red:hover { background: var(--red); color: white; }
+        .btn-red:hover { background: var(--red); color: var(--pure-white); border-color: var(--red); }
 
-        /* Empty State */
+        /* Empty Repository State */
         .empty-vault {
-            grid-column: 1 / -1;
             text-align: center;
-            padding: 100px;
-            opacity: 0.5;
+            padding: 50px 20px;
             font-family: monospace;
             letter-spacing: 2px;
         }
@@ -158,70 +242,70 @@
 </head>
 <body>
 
-    <!-- Inside the Ledger Section of your HTML -->
-<div class="ledger-section">
-    <!-- Registration Table -->
-    <div class="table-container">
-        <div class="table-header">
-            <h3>Contestant Registrations</h3>
-            <i class="fa-solid fa-users-gear" style="color: var(--paystack-blue);"></i>
-        </div>
-        
-        {% if registrations %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Transaction ID</th>
-                    <th>Contestant</th>
-                    <th>Amount</th>
-                    <th>Channel</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reg in registrations %}
-                <tr>
-                    <td>{{ reg.id }}</td>
-                    <td>{{ reg.contestant }}</td>
-                    <td>₦{{ "{:,.0f}".format(reg.amount) }}</td>
-                    <td><span class="tag tag-ps">PAYSTACK</span></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="header">
+        <h1>Media Directory Vault</h1>
+        <p>VoTal9ja Secure Content Storage</p>
+    </div>
+
+    <div class="vault-section">
+        {% if media_folders %}
+            {% for folder in media_folders %}
+            <div class="contestant-folder">
+                <div class="folder-title">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Folder: {{ folder.contestant_id }}
+                    <span>{{ folder.files|length }} File(s) Retained</span>
+                </div>
+                
+                <div class="media-container">
+                    {% for file in folder.files %}
+                    <div class="media-card">
+                        <div class="preview-box">
+                            {% if file.type == 'video' %}
+                                <video src="{{ file.url }}" controls></video>
+                            {% elif file.type == 'image' %}
+                                <img src="{{ file.url }}" alt="Contestant Submission">
+                            {% else %}
+                                <div class="audio-placeholder">
+                                    <i class="fa-solid fa-microphone-lines"></i>
+                                    <span>Audio Performance</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="media-info">
+                            <span class="contestant-name">{{ file.contestant_name }}</span>
+                            <div class="file-meta">
+                                <span>{{ file.format }}</span>
+                                <span>{{ file.size }}</span>
+                            </div>
+                            {% if file.type == 'audio' %}
+                                <audio src="{{ file.url }}" controls></audio>
+                            {% endif %}
+                        </div>
+
+                        <div class="media-actions">
+                            <a href="{{ file.url }}" download class="votal-btn"><i class="fa-solid fa-cloud-arrow-down"></i> Download</a>
+                            <button onclick="deleteMedia('{{ file.id }}')" class="votal-btn btn-red"><i class="fa-solid fa-trash-can"></i> Wipe</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
         {% else %}
-        <div style="text-align: center; padding: 40px; color: var(--text-dim); border: 1px dashed var(--border); border-radius: 10px;">
-            <i class="fa-solid fa-hourglass-start" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
-            <p>SYSTEM STANDBY: No registrations detected yet.</p>
-        </div>
+            <div class="contestant-folder" style="text-align: center; padding: 80px 20px;">
+                <div class="empty-vault">
+                    <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 20px; color: var(--gold); opacity: 0.6;"></i>
+                    <p style="color: var(--text-dim); font-size: 0.9rem;">REPOSITORIES VACANT: Waiting for initial contestant uploads.</p>
+                </div>
+            </div>
         {% endif %}
     </div>
 
-    <!-- Revenue Audit -->
-    <div class="table-container">
-        <div class="table-header">
-            <h3>Revenue Audit</h3>
-            <i class="fa-solid fa-chart-line" style="color: var(--accent-red);"></i>
-        </div>
-        <div style="padding: 10px 0;">
-            <div style="margin-bottom: 15px;">
-                <small>Registration Count</small>
-                <p style="font-weight: bold; font-size: 1.2rem;">{{ registrations|length }}</p>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <small>Live Vote Count</small>
-                <p style="font-weight: bold; font-size: 1.2rem; color: var(--opay-green);">{{ total_votes_count }}</p>
-            </div>
-            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
-            <p style="font-size: 0.75rem; text-align: center; color: var(--text-dim); font-style: italic;">
-                Audit engine is active and monitoring incoming payloads.
-            </p>
-        </div>
-    </div>
-</div>
-
     <script>
         function deleteMedia(id) {
-            if(confirm("PERMANENTLY DELETE THIS MEDIA FROM THE SERVER?")) {
+            if(confirm("PERMANENTLY ERASE THIS PERFORMANCE FILE FROM THE SERVERS?")) {
                 fetch(`/admin/delete_media/${id}`, { method: 'POST' })
                 .then(res => res.json())
                 .then(data => {
