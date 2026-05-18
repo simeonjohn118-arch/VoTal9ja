@@ -8,10 +8,10 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         
-        /* Modernized Body with Castle Background and Elegant Overlay */
+        /* Modernized Body with Warm Palace Luxury (Removed the heavy blue tones) */
         body { 
-            background: linear-gradient(135deg, rgba(29, 53, 87, 0.9), rgba(10, 25, 47, 0.85)), 
-                        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed; 
+            background: linear-gradient(135deg, rgba(13, 13, 17, 0.92), rgba(26, 17, 5, 0.88)), 
+                        url('https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed; 
             background-size: cover;
             color: #f8f9fa; 
             min-height: 100vh;
@@ -39,40 +39,82 @@
         }
 
         .header-box { margin-bottom: 40px; }
-        .header-box h1 { font-size: 2.2rem; color: #ffffff; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
-        .header-box p { color: #E63946; font-weight: bold; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; }
+        .header-box h1 { font-size: 2.2rem; color: #ffffff; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .header-box p { color: #E63946; font-weight: bold; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
 
-        /* Modernized Ranking Glass Container */
+        /* Modernized Glass Ranking Container with Animated LED Moving Border Loop */
         .rank-list {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            background: rgba(15, 15, 20, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            z-index: 1;
+        }
+
+        /* Continuous LED Border Effect Animation Track - Softened and Subdued Glow */
+        .rank-list::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 30%,
+                rgba(179, 146, 18, 0.6) 45%,
+                rgba(153, 27, 27, 0.6) 55%,
+                transparent 70%
+            );
+            animation: led-rotate 5s linear infinite;
+            z-index: -2;
+        }
+
+        /* Inner Content Mask protecting the transparent crystal card space */
+        .rank-list::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: rgba(18, 18, 24, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 14px;
+            z-index: -1;
+        }
+
+        /* LED Rotation Frame Settings */
+        @keyframes led-rotate {
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Modernized List Item Card */
         .rank-item {
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 18px 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: transparent;
             transition: all 0.3s ease;
+            z-index: 2;
         }
         .rank-item:hover {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .rank-number { font-weight: 900; color: #E63946; width: 30px; font-size: 1.2rem; }
         .contestant-info { flex-grow: 1; text-align: left; margin-left: 15px; color: #ffffff; }
-        .vote-count { font-weight: bold; color: #a8dadc; background: rgba(168, 218, 220, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; }
+        .vote-count { font-weight: bold; color: #ffd700; background: rgba(255, 215, 0, 0.12); padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; border: 1px solid rgba(255, 215, 0, 0.15); }
 
         /* --- THE FAINTED "NO CONTEST" OVERLAY --- */
         .empty-state {
+            position: relative;
             padding: 60px 20px;
             display: flex;
             flex-direction: column;
@@ -80,9 +122,10 @@
             opacity: 0.5; /* Adjusted slightly for visibility against dynamic background */
             filter: grayscale(100%);
             color: #ffffff;
+            z-index: 2;
         }
 
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: #a8dadc; }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: #ffd700; }
         .empty-state h2 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 600; }
         .empty-state p { font-size: 0.95rem; max-width: 280px; line-height: 1.5; opacity: 0.8; }
 
@@ -94,17 +137,18 @@
             color: #ffffff;
             font-weight: bold;
             font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
             padding: 12px 24px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         .back-btn i { margin-right: 8px; transition: transform 0.2s ease; }
         .back-btn:hover {
             background: #ffffff;
-            color: #1d3557;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            color: #0d0d11;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
         }
         .back-btn:hover i { transform: translateX(-4px); }
     </style>
