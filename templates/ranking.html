@@ -7,10 +7,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #1d3557; color: #1d3557; }
+        
+        /* Modernized Body with Castle Background and Elegant Overlay */
+        body { 
+            background: linear-gradient(135deg, rgba(29, 53, 87, 0.9), rgba(10, 25, 47, 0.85)), 
+                        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed; 
+            background-size: cover;
+            color: #f8f9fa; 
+            min-height: 100vh;
+        }
+
+        /* Clean and padded logo area */
+        .logo-area {
+            padding: 20px 30px;
+        }
+        .logo-area img {
+            height: 35px !important; /* Made slightly more visible for a modern header feel */
+            width: auto;
+            vertical-align: middle;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
 
         .container {
-            margin-top: 50px;
+            margin-top: 30px;
             padding: 20px;
             max-width: 600px;
             margin-left: auto;
@@ -19,28 +39,37 @@
         }
 
         .header-box { margin-bottom: 40px; }
-        .header-box h1 { font-size: 1.8rem; color: #1d3557; }
-        .header-box p { color: #E63946; font-weight: bold; font-size: 0.9rem; }
+        .header-box h1 { font-size: 2.2rem; color: #ffffff; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
+        .header-box p { color: #E63946; font-weight: bold; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* Ranking Table/List */
+        /* Modernized Ranking Glass Container */
         .rank-list {
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
+        /* Modernized List Item Card */
         .rank-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 25px;
-            border-bottom: 1px solid #eee;
+            padding: 18px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+        }
+        .rank-item:hover {
+            background: rgba(255, 255, 255, 0.06);
         }
 
-        .rank-number { font-weight: 900; color: #E63946; width: 30px; }
-        .contestant-info { flex-grow: 1; text-align: left; margin-left: 15px; }
-        .vote-count { font-weight: bold; color: #1d3557; }
+        .rank-number { font-weight: 900; color: #E63946; width: 30px; font-size: 1.2rem; }
+        .contestant-info { flex-grow: 1; text-align: left; margin-left: 15px; color: #ffffff; }
+        .vote-count { font-weight: bold; color: #a8dadc; background: rgba(168, 218, 220, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; }
 
         /* --- THE FAINTED "NO CONTEST" OVERLAY --- */
         .empty-state {
@@ -48,22 +77,36 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            opacity: 0.4; /* This makes it faint */
+            opacity: 0.5; /* Adjusted slightly for visibility against dynamic background */
             filter: grayscale(100%);
+            color: #ffffff;
         }
 
-        .empty-state i { font-size: 4rem; margin-bottom: 20px; }
-        .empty-state h2 { font-size: 1.2rem; margin-bottom: 10px; }
-        .empty-state p { font-size: 0.9rem; max-width: 250px; }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: #a8dadc; }
+        .empty-state h2 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 600; }
+        .empty-state p { font-size: 0.95rem; max-width: 280px; line-height: 1.5; opacity: 0.8; }
 
+        /* Modernized Back Button */
         .back-btn {
             display: inline-block;
-            margin-top: 30px;
+            margin-top: 35px;
             text-decoration: none;
-            color: #1d3557;
+            color: #ffffff;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
+        .back-btn i { margin-right: 8px; transition: transform 0.2s ease; }
+        .back-btn:hover {
+            background: #ffffff;
+            color: #1d3557;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .back-btn:hover i { transform: translateX(-4px); }
     </style>
 </head>
 <body>
