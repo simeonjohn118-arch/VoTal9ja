@@ -20,7 +20,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
 
         body { 
-            background: linear-gradient(rgba(11, 19, 43, 0.85), rgba(230, 57, 70, 0.35)), url('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1800') no-repeat center center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000') no-repeat center center;
             background-size: cover;
             background-attachment: fixed;
             color: var(--text-gold);
@@ -28,73 +28,6 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-        }
-
-        /* --- MULTI-SPOTLIGHT CAROUSEL STAGE OVERLAY --- */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* 4 distinct linear-gradient beams radiating from different corners/points on the stage */
-            background: 
-                linear-gradient(115deg, rgba(230, 57, 70, 0.12) 0%, transparent 40%),
-                linear-gradient(245deg, rgba(69, 123, 157, 0.15) 0%, transparent 45%),
-                linear-gradient(25deg, rgba(241, 250, 238, 0.08) 0%, transparent 35%),
-                linear-gradient(155deg, rgba(230, 57, 70, 0.1) 0%, transparent 40%);
-            background-blend-mode: screen;
-            z-index: 0;
-            pointer-events: none;
-            animation: masterStagePulse 8s ease-in-out infinite alternate;
-        }
-
-        /* 4 Independent Moving Spotlight Elements */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            background-image: 
-                radial-gradient(circle at 20% 10%, rgba(69, 123, 157, 0.25) 0%, transparent 25%),
-                radial-gradient(circle at 80% 15%, rgba(230, 57, 70, 0.25) 0%, transparent 25%),
-                radial-gradient(circle at 30% 90%, rgba(241, 250, 238, 0.15) 0%, transparent 30%),
-                radial-gradient(circle at 75% 85%, rgba(69, 123, 157, 0.2) 0%, transparent 25%);
-            animation: dynamicSpotlights 16s linear infinite;
-        }
-
-        @keyframes masterStagePulse {
-            0% { opacity: 0.8; }
-            100% { opacity: 1; }
-        }
-
-        /* Complex structural movement mapping all 4 stage lights in different paths */
-        @keyframes dynamicSpotlights {
-            0% {
-                background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
-                transform: scale(1);
-            }
-            25% {
-                background-position: 10% 15%, -15% 10%, 8% -10%, -5% 12%;
-                transform: scale(1.05);
-            }
-            50% {
-                background-position: -5% 25%, 10% -20%, -12% 15%, 15% -8%;
-                transform: scale(1);
-            }
-            75% {
-                background-position: 15% -10%, -8% 15%, 10% 5%, -10% -15%;
-                transform: scale(1.03);
-            }
-            100% {
-                background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
-                transform: scale(1);
-            }
         }
 
         header {
@@ -211,7 +144,7 @@
         .link-card {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass);
+            border: 1px solid rgba(230, 57, 70, 0.4);
             width: 100%;
             padding: 15px;
             border-radius: 15px;
@@ -220,6 +153,19 @@
             align-items: center;
             gap: 10px;
             position: relative; /* Added context structure for absolute position drop panel */
+            box-shadow: 0 0 15px rgba(230, 57, 70, 0.25);
+            animation: linkLedPulse 2.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes linkLedPulse {
+            0% {
+                box-shadow: 0 0 12px rgba(230, 57, 70, 0.2);
+                border-color: rgba(230, 57, 70, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 22px rgba(230, 57, 70, 0.45);
+                border-color: rgba(230, 57, 70, 0.6);
+            }
         }
         
         /* Modernized Active Trigger Button for Sharing options */
@@ -311,10 +257,10 @@
         }
 
         .action-box {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             padding: 25px; 
             text-align: center;
@@ -326,9 +272,10 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
+            cursor: pointer;
         }
 
-        /* LED Tracker Light Layers for Action Boxes */
+        /* Softened LED Tracker Light Layers for Action Boxes */
         .action-box::before {
             content: '';
             position: absolute;
@@ -344,6 +291,8 @@
             );
             animation: boxLedRotate 4s linear infinite;
             z-index: -2;
+            opacity: 0.15; /* Very soft and subtle by default in the catalog */
+            transition: opacity 0.4s ease;
         }
 
         /* Inner container mask layer to create modern border thickness */
@@ -351,10 +300,10 @@
             content: '';
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
-            background: rgba(29, 53, 87, 0.85);
+            background: rgba(11, 19, 43, 0.7); /* Subtle dark container fill */
             border-radius: 18px;
             z-index: -1;
-            transition: background 0.3s;
+            transition: background 0.4s ease;
         }
 
         @keyframes boxLedRotate {
@@ -363,9 +312,19 @@
 
         .action-box:hover {
             transform: translateY(-8px);
-            border-color: rgba(230, 57, 70, 0.5);
+            border-color: rgba(230, 57, 70, 0.4);
             box-shadow: 0 15px 35px rgba(230, 57, 70, 0.25);
         } 
+
+        /* Slightly brightens glow on hover, keeping it elegant */
+        .action-box:hover::before {
+            opacity: 0.3; 
+        }
+
+        /* Becomes explicitly stronger when the tile is clicked and active */
+        .action-box.clicked::before {
+            opacity: 0.85 !important;
+        }
 
         .action-box:hover::after {
             background: rgba(230, 57, 70, 0.15);
@@ -561,6 +520,16 @@
         // Close sharing interface smoothly if window target clicked elsewhere
         document.addEventListener('click', function() {
             shareDropdown.classList.remove('active');
+        });
+
+        // Add Active Click Architecture for Action Tiles LED Lights 
+        const actionBoxes = document.querySelectorAll('.action-box');
+        actionBoxes.forEach(box => {
+            box.addEventListener('click', function(e) {
+                // Remove clicked class from all other blocks to highlight this specific one exclusively
+                actionBoxes.forEach(b => b.classList.remove('clicked'));
+                this.classList.add('clicked');
+            });
         });
 
         function copyVotingLink() {
