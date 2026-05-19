@@ -50,9 +50,26 @@
         .talent-info { padding: 15px; text-align: center; }
         .talent-info h4 { color: #E63946; margin-bottom: 10px; }
 
-        /* 3. About Us */
-        #about { background: #f1f1f1; }
-        .about-content { display: block; gap: 50px; align-items: center; max-width: 1000px; margin: 0 auto; }
+        /* 3. About Us - UPDATED WITH FAINT WATERMARK LOGO BACKGROUND */
+        #about { 
+            background: #f1f1f1; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        #about::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('static/image/logo.jpg') no-repeat center center;
+            background-size: 100%;
+            opacity: 15%; /* Adjust this value if you want it more or less faint (0.01 to 1.0) */
+            pointer-events: none;
+            z-index: 0;
+        }
+        .about-content { 
+            display: block; gap: 50px; align-items: center; max-width: 1000px; margin: 0 auto; 
+            position: relative; z-index: 1; /* Keeps text stacked clean above the background graphic */
+        }
 
         /* 4. Registration Form - UPDATED BACKGROUND STYLE MATCHED TO LOGIN.HTML */
         #register { 
@@ -250,7 +267,7 @@
     </div>
 
     <section id="about">
-        <h2>About VoTal9ja</h2>
+        <h2 style="position: relative; z-index: 1;">About VoTal9ja</h2>
         <div class="about-content">
             <b>The Genesis: A New Era for Nigerian Excellence</b> <br>
             Nigeria is a powerhouse of human potential. From the rhythmic beats of our local drums to the digital canvases of our tech-savvy youth, there is a rhythm the world is waiting to hear. <br>For too long, the path to stardom has been reserved for those with the right connections. VoTal9ja was created to change that narrative. We are a talent discovery brand that believes the next global icon is currently sitting in a room somewhere in Nigeria, waiting for a single opportunity to be seen. <br><br>
