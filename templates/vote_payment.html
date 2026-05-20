@@ -7,18 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0b132b;
-            --navy: #1d3557;
-            --red: #E63946;
+            /* Warm Monochromatic Accents to blend with the gold/amber theme */
+            --bg: #160e06; 
+            --navy: #36220f; 
+            --red: #b8621d;  
             --gold: #FFD700;
-            --white: #f1faee;
-            --glass: rgba(255, 255, 255, 0.05);
+            --white: #fdfaf4;
+            --warm-glow: rgba(255, 215, 0, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            background: radial-gradient(circle at top right, #1d3557, #0b132b);
+            /* FIXED: Combined the amber gradient overlay with filters to make the image colors look crisp and sharp */
+            background: linear-gradient(135deg, rgba(26, 17, 8, 0.75), rgba(46, 30, 14, 0.70)), 
+                        url("{{ url_for('static', filename='image/voting-bg.png') }}") no-repeat center center fixed;
+            background-size: cover;
+            backdrop-filter: contrast(115%) brightness(95%); /* Makes the underlying background image look sharper */
+            -webkit-backdrop-filter: contrast(115%) brightness(95%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -27,17 +33,27 @@
             padding: 20px;
         }
 
-        /* DIGITAL FRAME STRUCTURE RESTORED */
+        /* FIXED: PURE GLASS MORPHISM STRUCTURE - ULTRA TRANSPARENT */
         .template-wrapper {
             position: relative;
             width: 100%;
             max-width: 450px;
-            background: rgba(29, 53, 87, 0.4);
-            backdrop-filter: blur(20px);
+            
+            /* Drastically lowered background alpha for maximum transparency */
+            background: rgba(255, 255, 255, 0.03); 
+            
+            /* Deepened the blurring effect to make the glass texture realistic */
+            backdrop-filter: blur(40px) saturate(120%);
+            -webkit-backdrop-filter: blur(40px) saturate(120%);
+            
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* Crisp, razor-thin highlight border for the glass edges */
+            border: 1px solid rgba(255, 255, 255, 0.25); 
+            
             padding: 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65), 
+                        inset 0 0 20px rgba(255, 255, 255, 0.05); /* Soft inner glass reflection */
             text-align: center;
         }
 
@@ -52,17 +68,17 @@
             opacity: 0.7;
             transition: 0.3s;
         }
-        .back-nav:hover { opacity: 1; transform: translateX(-3px); }
+        .back-nav:hover { opacity: 1; transform: translateX(-3px); color: var(--gold); }
 
         .image-frame {
             position: relative;
             width: 160px;
             height: 160px;
             margin: 0 auto 20px;
-            border: 3px solid var(--gold);
+            border: 2px solid var(--gold); /* Slightly thinner border for a cleaner aesthetic */
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 214, 0, 0.2);
+            box-shadow: 0 0 25px rgba(255, 214, 0, 0.25);
         }
 
         .image-frame img { width: 100%; height: 100%; object-fit: cover; }
@@ -75,36 +91,40 @@
             font-weight: bold;
             display: inline-block;
             margin-bottom: 10px;
+            letter-spacing: 1px;
         }
 
-        h2 { font-size: 1.6rem; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        h2 { font-size: 1.6rem; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; color: var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
         .input-group { text-align: left; margin-bottom: 15px; }
-        .input-group label { font-size: 0.7rem; color: var(--gold); margin-left: 10px; text-transform: uppercase; font-weight: bold; }
+        .input-group label { font-size: 0.7rem; color: var(--gold); margin-left: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
 
+        /* Transparent Glass Inputs */
         .input-style {
             width: 100%;
             padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             color: white;
             font-size: 1rem;
             outline: none;
+            transition: 0.3s;
         }
+        .input-style:focus { border-color: var(--gold); background: rgba(255, 255, 255, 0.08); }
 
         .input-style[readonly] {
-            background: rgba(69, 123, 157, 0.2);
-            border-color: #457b9d;
+            background: rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.1);
             cursor: not-allowed;
-            color: #ccc;
+            color: #ebd2b0;
         }
 
         .calc-display {
-            background: rgba(230, 57, 70, 0.1);
+            background: var(--warm-glow);
             padding: 15px;
             border-radius: 12px;
-            border: 1px dashed var(--red);
+            border: 1px dashed rgba(255, 215, 0, 0.3);
             margin: 5px 0 15px 0;
         }
 
@@ -112,8 +132,8 @@
 
         .pay-btn {
             width: 100%;
-            background: var(--red);
-            color: white;
+            background: var(--gold);
+            color: #211304;
             padding: 18px;
             border: none;
             border-radius: 12px;
@@ -124,14 +144,15 @@
             transition: 0.4s;
             text-transform: uppercase;
         }
+        .pay-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
 
-        /* NEW: PAYMENT DISPLAY STYLING */
+        /* PAYMENT DISPLAY STYLING */
         #paymentArea {
-            display: none; /* Hidden by default */
+            display: none; 
             padding: 20px;
-            background: rgba(255,215,0,0.05);
+            background: rgba(255, 215, 0, 0.02);
             border-radius: 20px;
-            border: 1px solid var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.4);
             margin-top: 10px;
             animation: slideIn 0.4s ease-out;
         }
@@ -194,16 +215,15 @@
                 USE NARRATION: <strong>VT{{ contestant.id }}</strong>
             </div>
 
-            <button onclick="location.reload()" class="pay-btn" style="background: var(--navy);">I HAVE PAID</button>
+            <button onclick="location.reload()" class="pay-btn" style="background: var(--navy); color: var(--gold); border: 1px solid rgba(255,255,255,0.1);">I HAVE PAID</button>
         </div>
 
-        <p style="font-size: 0.65rem; margin-top: 20px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px;">
+        <p style="font-size: 0.65rem; margin-top: 20px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px;">
             Admin will verify your payment against this contestant's ID.
         </p>
     </div>
 
     <script>
-        // YOUR THREE ACCOUNT NUMBERS
         const accountList = [
             { number: "8123456781", bank: "OPAY (Account 1)" },
             { number: "7012345672", bank: "OPAY (Account 2)" },
@@ -225,15 +245,12 @@
                 return;
             }
 
-            // Pick a random account from the 3
             const selected = accountList[Math.floor(Math.random() * accountList.length)];
 
-            // Fill the details
             document.getElementById('finalAmt').innerText = amount;
             document.getElementById('displayAcc').innerText = selected.number;
             document.getElementById('displayBank').innerText = selected.bank;
 
-            // Switch views
             document.getElementById('formArea').style.display = 'none';
             document.getElementById('paymentArea').style.display = 'block';
         }

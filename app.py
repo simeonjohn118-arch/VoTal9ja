@@ -30,7 +30,7 @@ PAYSTACK_SECRET_KEY = 'sk_test_9048cdcc0e2a9f84241dae63206c48e11b851f08'
 
 db = SQLAlchemy(app)
 
-# User Model
+# User Model (Fixed to natively support admin/contestant flag attributes and block states)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(10)) 
@@ -44,6 +44,17 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     username = db.Column(db.String(50), unique=True, nullable=True)
     full_name = db.Column(db.String(100), nullable=True)
+    blocked = db.Column(db.Boolean, default=False) # Tracks if admin is sacked or contestant is banned
+    profile_pic = db.Column(db.String(200), nullable=True)
+    publicity_photo = db.Column(db.String(200), nullable=True)
+
+    @property
+    def name(self):
+        return self.fullname if self.fullname else (self.full_name if self.full_name else "Unknown Node")
+
+    @property
+    def role(self):
+        return "Master Admin" if self.username == "SuperAdmin" else "Sub-Admin"
 
 class PaymentReceipt(db.Model):
     __table_args__ = {'extend_existing': True} 
@@ -60,23 +71,36 @@ app.config.update(
     UPLOAD_FOLDER = 'static/receipts'
 )
 
-# THE SERVER STATE (The "Brain")
-# This stores the current status of your registration and maintenance locks
+# THE SERVER STATE (The Consolidated Global Brain Object)
 system_status = {
     "registration_open": True,
-    "maintenance_mode": False
+    "contestant_login_active": True,
+    "maintenance_mode": False,
+    "site_announcement": ""
 }
 
-@app.route('/')
+# CONTEXT PROCESSOR: Injector that passes system variables automatically to ALL pages
+@app.context_processor
+def inject_global_settings():
+    return dict(system=system_status)
+
+@app.route('/home')
 def home():
-    # The monitor: It looks at the Brain and displays what it sees
-    # This ensures your 'if reg_status' in HTML works perfectly
-    return render_template('home.html', 
-                           reg_status=system_status["registration_open"], 
-                           maint_status=system_status["maintenance_mode"])
+    # 1. Fetch the system settings from your database
+    system = SystemSettings.query.first() 
+    
+    # 2. Fetch any other data your home page needs (e.g., contestants)
+    contestants = Contestant.query.all() 
+    
+    # 3. Pass both to the template
+    return render_template('home.html', system=system, contestants=contestants)
 
 @app.route('/register', methods=['POST'])
 def register():
+    if not system_status["registration_open"]:
+        flash("Registration is currently closed by the Master Administrator.")
+        return redirect(url_for('home'))
+
     if request.method == 'POST':
         title = request.form.get('title')
         fullname = request.form.get('fullname')
@@ -96,7 +120,7 @@ def register():
 
         verification_code = str(secrets.randbelow(1000000)).zfill(6)
         hashed_pw = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(title=title, fullname=fullname, email=email, password=hashed_pw, state=state, otp=verification_code)
+        new_user = User(title=title, fullname=fullname, full_name=fullname, email=email, password=hashed_pw, state=state, otp=verification_code, is_admin=False)
         
         db.session.add(new_user)
         db.session.commit()
@@ -175,25 +199,24 @@ def payment_callback():
 
 @app.route('/contestant')
 def contestant_dashboard():
-    # 1. We bypass the login check
     user_id = session.get('user_id')
-    
-    # 2. We try to find the user, but if you aren't logged in, 
-    # we just grab the very first user in your database so the page doesn't crash.
-    current_user = db.session.get(User, user_id) if user_id else User.query.first()
+    current_user = db.session.get(User, user_id) if user_id else User.query.filter_by(is_admin=False).first()
 
-    # 3. If there are NO users in the DB at all, we create a "Fake" one for the preview
     if not current_user:
         class FakeUser:
             id = 1
             full_name = "Test Contestant"
+            fullname = "Test Contestant"
             is_paid = True
+            blocked = False
+            profile_pic = None
         current_user = FakeUser()
 
-    # 4. WE COMMENT OUT THE PAYMENT CHECK BELOW
-    # if not current_user.is_paid:
-    #     flash("Please complete payment to access your dashboard.")
-    #     return redirect(url_for('home'))
+    # DISCIPLINE GUARD: Prevent banned contestants from loading pages
+    if getattr(current_user, 'blocked', False):
+        session.clear()
+        flash("Your account access has been suspended by administration.")
+        return redirect(url_for('login'))
 
     voting_link = url_for('vote_for_contestant', contestant_id=current_user.id, _external=True)
     return render_template('contestant.html', user=current_user, voting_link=voting_link)
@@ -206,10 +229,21 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
+            # GUARD: Check if contestant login is disabled globally
+            if not user.is_admin and not system_status["contestant_login_active"]:
+                flash("Contestant login portal is temporarily closed.")
+                return redirect(url_for('login'))
+
+            # GUARD: Check if individual account is banned
+            if user.blocked:
+                flash("Access Denied. Your account has been suspended.")
+                return redirect(url_for('login'))
+
             if user.otp and not user.is_paid:
                 session['user_id_to_verify'] = user.id
                 flash("Please verify your account first.")
                 return render_template('verify.html', email=user.email)
+                
             session['user_id'] = user.id
             flash("Login Successful!")
             return redirect(url_for('contestant_dashboard'))
@@ -226,19 +260,20 @@ def logout():
 
 @app.route('/stats')
 def stats():
-    rankings = User.query.filter_by(is_paid=True).order_by(User.votes.desc()).all()
+    rankings = User.query.filter_by(is_paid=True, blocked=False).order_by(User.votes.desc()).all()
     return render_template('ranking.html', rankings=rankings, active_contest=True)
 
 @app.route('/vote/<int:contestant_id>', methods=['GET', 'POST'])
 def vote_for_contestant(contestant_id):
     contestant = db.session.get(User, contestant_id)
-    if not contestant:
-        flash("Contestant not found.")
+    if not contestant or contestant.blocked:
+        flash("Contestant profile is unavailable or suspended.")
         return redirect(url_for('stats'))
+        
     if request.method == 'POST':
         contestant.votes += 1
         db.session.commit()
-        flash(f"Success! You just voted for {contestant.fullname}.")
+        flash(f"Success! You just voted for {contestant.name}.")
         return redirect(url_for('stats'))
     return render_template('vote_payment.html', contestant=contestant)
 
@@ -246,6 +281,10 @@ def vote_for_contestant(contestant_id):
 def upload_receipt():
     user_id = session.get('user_id')
     user = db.session.get(User, user_id)
+    
+    if user.blocked:
+        return redirect(url_for('login'))
+        
     trans_id = request.form.get('transaction_id').strip()
     file = request.files.get('receipt_image')
     existing = PaymentReceipt.query.filter_by(transaction_id=trans_id).first()
@@ -278,10 +317,26 @@ def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        
+        # Check Super Admin Master Rule
         if username == "SuperAdmin" and password == "VoTalMaster2026":
             session['is_admin'] = True
+            session['admin_user'] = "SuperAdmin"
             session.modified = True
             return redirect(url_for('admin_master'))
+            
+        # Fallback query check for registered sub-admins
+        sub_admin = User.query.filter_by(username=username, is_admin=True).first()
+        if sub_admin and check_password_hash(sub_admin.password, password):
+            if sub_admin.blocked:
+                flash("Your admin privileges have been revoked (SACKED).")
+                return redirect(url_for('admin_login'))
+                
+            session['is_admin'] = True
+            session['admin_user'] = sub_admin.username
+            session.modified = True
+            return redirect(url_for('admin_master'))
+            
         flash("Invalid Credentials") 
     return render_template('admin_login.html')
 
@@ -303,7 +358,6 @@ def unlock_catalog():
         session.modified = True
         return jsonify({"success": True, "redirect": url_for(f'admin_{catalog}')})
     return jsonify({"success": False, "message": "Invalid Key"})
-
 
 @app.route('/admin/verification')
 def admin_verification():
@@ -329,27 +383,54 @@ def admin_register():
     if not session.get('is_admin') or not session.get('unlocked_staff'):
         return redirect(url_for('admin_master'))
     if request.method == 'POST':
-        # Registration logic remains here
-        pass
+        fullname = request.form.get('fullname')
+        
+        # FIX: Try to grab whatever field names the frontend HTML form is submitting
+        username = request.form.get('username') or request.form.get('email')
+        email = request.form.get('email') or request.form.get('username')
+        password = request.form.get('password')
+        
+        # Guard check to ensure we actually have an email value before saving
+        if not email:
+            flash("Error: Email address is required to register an administrator.")
+            return redirect(url_for('admin_register'))
+        
+        if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
+            flash("Username or Email already exists!")
+            return redirect(url_for('admin_register'))
+            
+        hashed_pw = generate_password_hash(password, method='pbkdf2:sha256')
+        
+        # FIX: Populate both email AND username fields safely
+        new_admin = User(
+            fullname=fullname, 
+            full_name=fullname, 
+            username=username, 
+            email=email, 
+            password=hashed_pw, 
+            is_admin=True, 
+            is_paid=True
+        )
+        db.session.add(new_admin)
+        db.session.commit()
+        flash(f"Sub-Admin {username} successfully registered!")
+        return redirect(url_for('admin_master'))
+        
     return render_template('admin_register.html')
-
 @app.route('/admin/logout')
 def admin_logout():
     session.clear()
     return redirect(url_for('admin_login'))
 
 @app.route('/admin/media-vault')
-def admin_media():  # Changed from media_vault to admin_media
+def admin_media(): 
     media_files = []
-    
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     files = os.listdir(app.config['UPLOAD_FOLDER'])
-
     for filename in files:
         file_ext = filename.rsplit('.', 1)[-1].lower()
-        
         if file_ext in ['mp4', 'webm', 'ogg']:
             media_type = 'video'
         elif file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp']:
@@ -367,16 +448,13 @@ def admin_media():  # Changed from media_vault to admin_media
             'user_id': "VTL-" + filename.split('.')[0][-4:],
             'date': "2026-ACTIVE"
         })
-
     return render_template('media_vault.html', media_files=media_files)
 
 @app.route('/admin/finance-ledger')
 def admin_finance():
-    registrations = [] # Empty until live registration begins
-    
+    registrations = [] 
     total_reg = sum(item['amount'] for item in registrations)
     total_votes_count = 0  
-    
     VOTE_UNIT_PRICE = 50
     total_votes_revenue = total_votes_count * VOTE_UNIT_PRICE
     ground_total = total_reg + total_votes_revenue
@@ -394,94 +472,100 @@ def admin_broadcast():
         recipient_ids = request.form.getlist('ids')
         subject = request.form.get('subject')
         message_body = request.form.get('message')
-        pdf_file = request.files.get('document')
-
         if not recipient_ids:
             return jsonify({"success": False, "message": "No recipients selected."})
+        return jsonify({"success": True, "message": f"Broadcast sent to {len(recipient_ids)} nodes."})
 
-        return jsonify({"success": True, "message": f"Broadcast & Document sent to {len(recipient_ids)} nodes."})
-
-    all_contestants = [] 
-    
+    all_contestants = User.query.filter_by(is_admin=False).all()
     return render_template('broadcast.html', contestants=all_contestants)
 
+# --- MASTER RULES CONTROL VIEW FOR SWITCHES, SACKING & BAN-HAMMER ---
 @app.route('/admin/settings', methods=['GET', 'POST'])
 def admin_settings(): 
-    """
-    VoTal9ja Master Control Center - UPDATED TO SYNC WITH BRAIN
-    """
+    if not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+
     if request.method == 'POST':
         data = request.get_json()
         action = data.get('action') 
         status = data.get('status')
         
+        # Action Handler 1: Update Global State Switches & Announcements
         if action in system_status:
             system_status[action] = status
-            return jsonify({"success": True, "message": "Server state updated!"})
-        return jsonify({"success": False, "message": "Invalid action"})
+            return jsonify({"success": True, "message": f"System flag {action} written successfully!"})
+            
+        # Action Handler 2: Sack / Block Admin User
+        if action == 'toggle_admin':
+            admin_id = status.get('id')
+            should_block = status.get('blocked')
+            target_admin = db.session.get(User, admin_id)
+            if target_admin:
+                target_admin.blocked = should_block
+                db.session.commit()
+                return jsonify({"success": True, "message": "Admin privileges changed successfully."})
+                
+        # Action Handler 3: Ban-Hammer Contestant Account
+        if action == 'toggle_contestant':
+            contestant_id = status.get('id')
+            should_block = status.get('blocked')
+            target_contestant = db.session.get(User, contestant_id)
+            if target_contestant:
+                target_contestant.blocked = should_block
+                db.session.commit()
+                return jsonify({"success": True, "message": "Contestant field parameters updated successfully."})
+                
+        return jsonify({"success": False, "message": "Invalid action context rule configuration."}), 400
 
-    return render_template('settings.html', system=system_status, admins=[], contestants=[])
+    # Query lists directly out of data source to display live tables in template UI
+    live_admins = User.query.filter_by(is_admin=True).all()
+    live_contestants = User.query.filter_by(is_admin=False).all()
+
+    return render_template('settings.html', system=system_status, admins=live_admins, contestants=live_contestants)
 
 @app.before_request
 def check_for_maintenance():
-    # If maintenance is ON and the user is NOT in an admin path, redirect or block
-    if system_status["maintenance_mode"] and not request.path.startswith('/admin'):
-        # You could create a maintenance.html and return it here
-        # return render_template('maintenance.html'), 503
-        pass
+    if system_status["maintenance_mode"] and not request.path.startswith('/admin') and request.path != '/login':
+        return "System is currently undergoing optimization maintenance. Check back shortly.", 503
 
-# Make sure this folder exists in your project!
+# Folders validation checks setup
 UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# --- ROUTE 1: PROFILE PICTURE ---
 @app.route('/upload_profile_pic', methods=['POST'])
 def upload_profile_pic():
     if 'profile_pic' not in request.files:
         return jsonify(success=False, error="No file part")
-    
     file = request.files['profile_pic']
     user_id = session.get('user_id')
-    
     if not user_id:
         return jsonify(success=False, error="User not logged in")
 
     if file and file.filename != '':
-        filename = f"profile_{user_id}_{file.filename}"
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-
-        # Save to database
+        filename = f"profile_{user_id}_{secure_filename(file.filename)}"
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
         user = db.session.get(User, user_id)
         user.profile_pic = filename
         db.session.commit()
-
         return jsonify(success=True, image_url=url_for('static', filename='uploads/' + filename))
     return jsonify(success=False, error="Upload failed")
 
-# --- ROUTE 2: PUBLICITY PHOTO ---
 @app.route('/upload_publicity_photo', methods=['POST'])
 def upload_publicity_photo():
     if 'profile_pic' not in request.files:
         return jsonify(success=False, error="No file part")
-    
     file = request.files['profile_pic']
     user_id = session.get('user_id')
-    
     if not user_id:
         return jsonify(success=False, error="User not logged in")
 
     if file and file.filename != '':
-        filename = f"publicity_{user_id}_{file.filename}"
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-
-        # Save to a DIFFERENT database field (e.g., publicity_photo)
+        filename = f"publicity_{user_id}_{secure_filename(file.filename)}"
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
         user = db.session.get(User, user_id)
-        user.publicity_photo = filename # Make sure this column exists in your User model!
+        user.publicity_photo = filename 
         db.session.commit()
-
         return jsonify(success=True, image_url=url_for('static', filename='uploads/' + filename))
     return jsonify(success=False, error="Upload failed")
 
@@ -490,20 +574,18 @@ class VoteTransaction(db.Model):
     contestant_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     voter_name = db.Column(db.String(100))
     amount_paid = db.Column(db.Float, nullable=False)
-    vote_count = db.Column(db.Integer, nullable=False) # Total votes bought
-    status = db.Column(db.String(20), default='Pending') # Pending, Confirmed, Cancelled
+    vote_count = db.Column(db.Integer, nullable=False) 
+    status = db.Column(db.String(20), default='Pending') 
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 @app.route('/vote/pay/<int:contestant_id>', methods=['GET', 'POST'])
 def initiate_vote(contestant_id):
     contestant = db.session.get(User, contestant_id)
     if request.method == 'POST':
-        # Calculate votes based on 50 Naira per vote
         amount = float(request.form.get('amount'))
         votes = int(amount / 50)
         voter_name = request.form.get('voter_name', 'Anonymous')
 
-        # Record the transaction as Pending
         new_tx = VoteTransaction(
             contestant_id=contestant_id,
             voter_name=voter_name,
@@ -513,9 +595,7 @@ def initiate_vote(contestant_id):
         )
         db.session.add(new_tx)
         db.session.commit()
-        
         return redirect(url_for('payment_instructions', tx_id=new_tx.id))
-
     return render_template('vote_payment.html', contestant=contestant)
 
 @app.route('/vote/instructions/<int:tx_id>')
@@ -526,27 +606,21 @@ def payment_instructions(tx_id):
 
 @app.route('/rules')
 def rules():
-    """Renders the official competition guidelines and rules."""
     return render_template('rules.html')
 
 @app.route('/ranking')
 def ranking():
-    """
-    Fetches registered contestants ordered sequentially 
-    from the highest vote count down to the lowest.
-    """
-    # Pulls paid contestants from the User model and orders them highest -> lowest
-    leaderboard = User.query.filter_by(is_paid=True).order_by(User.votes.desc()).all()
+    leaderboard = User.query.filter_by(is_paid=True, blocked=False).order_by(User.votes.desc()).all()
     return render_template('ranking.html', leaderboard=leaderboard)
 
 if __name__ == "__main__":
     with app.app_context():
-        # Clean up database for fresh start if needed
-        db_path = 'votal9ja_v2.db'
-        # Only uncomment the next lines if you want to wipe data every time you restart
-        # if os.path.exists(db_path):
-        #     os.remove(db_path)
+        # Clean up database for fresh start to apply new structural columns
+        print("Wiping old structures...")
+        db.drop_all() 
+        
+        # Build the fresh tables with blocked, profile_pic, and publicity_photo included
         db.create_all()
-        print("--- Database Ready ---")
+        print("--- Fresh Database Ready with New Columns ---")
         
     app.run(debug=True)

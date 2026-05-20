@@ -112,6 +112,12 @@
             border-radius: 8px;
             margin-bottom: 8px;
             font-size: 0.85rem;
+            transition: background 0.3s ease;
+        }
+
+        .user-item.flagged-active {
+            background: rgba(230, 57, 70, 0.15);
+            border: 1px dashed rgba(230, 57, 70, 0.4);
         }
 
         .btn-block {
@@ -123,6 +129,9 @@
             cursor: pointer;
             font-size: 0.7rem;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
             transition: 0.3s;
         }
 
@@ -137,9 +146,129 @@
             color: var(--ice-blue);
             letter-spacing: 2px;
         }
+
+        /* Toast Container Framework */
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-notification {
+            background: rgba(13, 27, 42, 0.95);
+            border-left: 4px solid var(--ice-blue);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            color: var(--pure-white);
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: toastFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: all 0.3s ease;
+        }
+
+        .toast-notification.success { border-left-color: var(--safety-green); }
+        .toast-notification.error { border-left-color: var(--accent-red); }
+        .toast-notification.info { border-left-color: var(--ice-blue); }
+
+        @keyframes toastFadeIn { to { transform: translateY(0); opacity: 1; } }
+        @keyframes toastFadeOut { to { transform: translateX(100px); opacity: 0; } }
+
+        /* Beautiful Dynamic Action Confirmation Modal Layer */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 24, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .confirm-modal {
+            background: linear-gradient(135deg, #111a2e, #0a0f1d);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 90%; max-width: 480px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .confirm-modal { transform: scale(1); }
+        
+        .modal-title {
+            font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--accent-red); font-weight: bold; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .modal-title.restore-theme { color: var(--safety-green); }
+        
+        .modal-details {
+            background: rgba(0,0,0,0.3); border-radius: 8px;
+            padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .modal-details div { font-size: 0.85rem; margin-bottom: 6px; color: var(--ice-blue); }
+        .modal-details strong { color: var(--pure-white); }
+        
+        .modal-body-text { font-size: 0.9rem; line-height: 1.5; color: #cbd5e1; margin-bottom: 25px; }
+        
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .btn-modal-cancel {
+            padding: 10px 20px; background: transparent; border: 1px solid var(--border);
+            color: var(--pure-white); border-radius: 6px; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-modal-cancel:hover { background: rgba(255,255,255,0.05); }
+        .btn-modal-confirm {
+            padding: 10px 24px; background: var(--accent-red); border: none;
+            color: var(--pure-white); border-radius: 6px; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); transition: 0.2s;
+        }
+        .btn-modal-confirm:hover { background: #b52a35; }
+        .btn-modal-confirm.restore-theme { background: var(--safety-green); box-shadow: 0 4px 12px rgba(50, 205, 50, 0.3); }
+        .btn-modal-confirm.restore-theme:hover { background: #28a745; }
     </style>
 </head>
 <body>
+
+    <div id="toast-container"></div>
+
+    <div class="modal-overlay" id="confirmModalOverlay">
+        <div class="confirm-modal">
+            <div class="modal-title" id="modalTitle"><i class="fa-solid fa-triangle-exclamation"></i> Confirm Action</div>
+            
+            <div class="modal-details">
+                <div>Target ID: <strong id="modalDetailId">-</strong></div>
+                <div>Account Identifier: <strong id="modalDetailName">-</strong></div>
+            </div>
+            
+            <p class="modal-body-text" id="modalBodyText">Are you sure you want to proceed with this structural override modification?</p>
+            
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="closeConfirmModal()">CANCEL</button>
+                <button class="btn-modal-confirm" id="modalConfirmBtn">CONFIRM ACTION</button>
+            </div>
+        </div>
+    </div>
 
     <div class="header">
         <h1>Master Control Center</h1>
@@ -148,7 +277,6 @@
 
     <div class="control-grid">
         
-        <!-- Global System Locks -->
         <div class="control-card">
             <div class="card-title"><i class="fa-solid fa-gears"></i> Global Systems</div>
             
@@ -158,7 +286,6 @@
                     <p style="font-size: 0.7rem; color: var(--ice-blue);">Enable/Disable new signups</p>
                 </div>
                 <label class="switch">
-                    <!-- Key updated to registration_open to match app.py -->
                     <input type="checkbox" {% if system.registration_open %}checked{% endif %} onchange="updateSystem('registration_open', this.checked)">
                     <span class="slider"></span>
                 </label>
@@ -170,7 +297,6 @@
                     <p style="font-size: 0.7rem; color: var(--ice-blue);">Allow contestants to access accounts</p>
                 </div>
                 <label class="switch">
-                    <!-- Key updated to contestant_login_active to match app.py -->
                     <input type="checkbox" {% if system.contestant_login_active %}checked{% endif %} onchange="updateSystem('contestant_login_active', this.checked)">
                     <span class="slider"></span>
                 </label>
@@ -182,53 +308,57 @@
                     <p style="font-size: 0.7rem; color: var(--accent-red);">Redirect entire site to "Under Construction"</p>
                 </div>
                 <label class="switch">
-                    <!-- Key updated to maintenance_mode to match app.py -->
                     <input type="checkbox" {% if system.maintenance_mode %}checked{% endif %} onchange="updateSystem('maintenance_mode', this.checked)">
                     <span class="slider"></span>
                 </label>
             </div>
         </div>
 
-        <!-- Admin Management -->
         <div class="control-card">
-            <div class="card-title"><i class="fa-solid fa-user-shield"></i> Admin Access (Sack/Block)</div>
-            <p style="font-size: 0.7rem; margin-bottom: 15px;">Revoke master site access from sub-admins.</p>
+            <div class="card-title"><i class="fa-solid fa-user-shield"></i> Admin Access (Sack Override)</div>
+            <p style="font-size: 0.7rem; margin-bottom: 15px;">Revoke master credentials and sack sub-administrators instantly.</p>
             <div class="block-list">
                 {% for admin in admins %}
-                <div class="user-item">
-                    <span>{{ admin.name }} <small style="color: var(--ice-blue);">({{ admin.role }})</small></span>
-                    <button class="btn-block {% if admin.blocked %}btn-blocked{% endif %}" onclick="toggleUser('admin', '{{ admin.id }}', this)">
-                        {% if admin.blocked %}UNBLOCK{% else %}BLOCK / SACK{% endif %}
+                <div class="user-item {% if admin.blocked %}flagged-active{% endif %}" id="admin-row-{{ admin.id }}">
+                    <span>{{ admin.username if admin.username else admin.email }} <small style="color: var(--ice-blue);">({{ admin.role if admin.role else 'Sub-Admin' }})</small></span>
+                    <button class="btn-block {% if admin.blocked %}btn-blocked{% endif %}" onclick="openConfirmModal('admin', '{{ admin.id }}', this, '{{ admin.username if admin.username else admin.email }}')">
+                        {% if admin.blocked %}
+                            <i class="fa-solid fa-user-plus"></i> RESTORE ACCESS
+                        {% else %}
+                            <i class="fa-solid fa-user-xmark"></i> SACK ADMIN
+                        {% endif %}
                     </button>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Contestant Discipline -->
         <div class="control-card">
             <div class="card-title"><i class="fa-solid fa-user-slash"></i> Contestant Ban-Hammer</div>
-            <p style="font-size: 0.7rem; margin-bottom: 15px;">Instantly terminate a contestant's session and login rights.</p>
+            <p style="font-size: 0.7rem; margin-bottom: 15px;">Instantly terminate a contestant's validation session and voting visibility.</p>
             <div class="block-list">
                 {% for c in contestants %}
-                <div class="user-item">
-                    <span>{{ c.name }}</span>
-                    <button class="btn-block {% if c.blocked %}btn-blocked{% endif %}" onclick="toggleUser('contestant', '{{ c.id }}', this)">
-                        {% if c.blocked %}UNBAN{% else %}BAN USER{% endif %}
+                <div class="user-item {% if c.blocked %}flagged-active{% endif %}" id="contestant-row-{{ c.id }}">
+                    <span>{{ c.username if c.username else c.fullname }}</span>
+                    <button class="btn-block {% if c.blocked %}btn-blocked{% endif %}" onclick="openConfirmModal('contestant', '{{ c.id }}', this, '{{ c.username if c.username else c.fullname }}')">
+                        {% if c.blocked %}
+                            <i class="fa-solid fa-gavel"></i> LIFT BAN
+                        {% else %}
+                            <i class="fa-solid fa-gavel"></i> BAN CONTESTANT
+                        {% endif %}
                     </button>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Site Preferences -->
         <div class="control-card">
             <div class="card-title"><i class="fa-solid fa-palette"></i> Site Identity</div>
             <div class="form-group" style="margin-bottom: 15px;">
                 <label style="font-size: 0.7rem; display: block; color: var(--ice-blue);">SYSTEM NOTIFICATION BAR</label>
-                <input type="text" id="announcement_text" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--border); padding:10px; color:white; border-radius:5px; margin-top:5px;" placeholder="e.g., Voting ends in 2 hours!">
+                <input type="text" id="announcement_text" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--border); padding:10px; color:white; border-radius:5px; margin-top:5px;" value="{{ system.site_announcement if system.site_announcement else '' }}" placeholder="e.g., Voting ends in 2 hours!">
             </div>
-            <button class="btn-block" style="width: 100%; border-color: var(--ice-blue); color: var(--ice-blue);" onclick="updateAnnouncement()">UPDATE SITE-WIDE ANNOUNCEMENT</button>
+            <button class="btn-block" style="width: 100%; border-color: var(--ice-blue); color: var(--ice-blue); justify-content: center;" onclick="updateAnnouncement()">UPDATE SITE-WIDE ANNOUNCEMENT</button>
         </div>
 
     </div>
@@ -238,8 +368,29 @@
     </div>
 
     <script>
+        // Global variables to store the context of what entry is pending confirmation
+        let currentModalContext = null;
+
+        // Custom Styled UI Toast Engine
+        function showToast(message, type = 'info', icon = 'fa-info-circle') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            
+            if(type === 'success') icon = 'fa-check-circle';
+            if(type === 'error') icon = 'fa-exclamation-triangle';
+            
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = "toastFadeOut 0.4s ease forwards";
+                setTimeout(() => { toast.remove(); }, 400);
+            }, 4000);
+        }
+
         function updateSystem(action, status) {
-            console.log(`Command Sent: ${action} set to ${status}`);
+            console.log(`Command Sent: ${action} set to `, status);
             
             fetch('/admin/settings', {
                 method: 'POST',
@@ -250,28 +401,90 @@
             .then(data => {
                 if (data.success) {
                     console.log("Server state updated successfully.");
+                    showToast("System configuration saved successfully!", "success");
+                } else {
+                    showToast("Failed to write update protocol to server.", "error");
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                showToast("Connection pipeline offline. Try again.", "error");
+            });
         }
 
-        function toggleUser(type, id, btn) {
-            const isBlocking = btn.innerText.includes("BLOCK") || btn.innerText.includes("BAN");
-            const confirmMsg = isBlocking ? `Confirm suspension of this ${type}?` : `Reactivate this ${type}?`;
+        // Custom Modal UI Opener Logic Engine
+        function openConfirmModal(type, id, btn, name) {
+            const overlay = document.getElementById('confirmModalOverlay');
+            const title = document.getElementById('modalTitle');
+            const detailId = document.getElementById('modalDetailId');
+            const detailName = document.getElementById('modalDetailName');
+            const bodyText = document.getElementById('modalBodyText');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
             
-            if (confirm(confirmMsg)) {
-                btn.classList.toggle('btn-blocked');
-                btn.innerText = isBlocking ? (type === 'admin' ? "UNBLOCK" : "UNBAN") : (type === 'admin' ? "BLOCK / SACK" : "BAN USER");
-                
-                // Sending the toggle command to the same settings endpoint
-                updateSystem(`toggle_${type}`, { id: id, blocked: isBlocking });
+            const isCurrentlyBlocked = btn.classList.contains('btn-blocked');
+            
+            // Save current context configurations for execute processing
+            currentModalContext = { type, id, btn, name, isCurrentlyBlocked };
+            
+            // Populate Details elements inside custom display box safely
+            detailId.innerText = `#${id}`;
+            detailName.innerText = name;
+            
+            if (!isCurrentlyBlocked) {
+                title.className = "modal-title";
+                confirmBtn.className = "btn-modal-confirm";
+                title.innerHTML = type === 'admin' ? `<i class="fa-solid fa-user-xmark"></i> CONFIRM ADMIN SACK` : `<i class="fa-solid fa-gavel"></i> CONFIRM CONTESTANT BAN`;
+                bodyText.innerText = type === 'admin' 
+                    ? `Are you sure you want to SACK ${name}? They will lose all dashboard credential clearance immediately.` 
+                    : `Are you sure you want to BAN the contestant ${name}? All active voter pipelines will lock.`;
+                confirmBtn.innerText = type === 'admin' ? "SACK ADMINISTRATOR" : "BAN CONTESTANT";
+            } else {
+                title.className = "modal-title restore-theme";
+                confirmBtn.className = "btn-modal-confirm restore-theme";
+                title.innerHTML = type === 'admin' ? `<i class="fa-solid fa-user-check"></i> RESTORE PANEL ACCESS` : `<i class="fa-solid fa-shield-heart"></i> LIFT ACCOUNT BAN`;
+                bodyText.innerText = type === 'admin' 
+                    ? `Re-authorize ${name} and grant complete access privileges back to this admin account?` 
+                    : `Lift the suspension ban restriction on ${name} and restore their live standing?`;
+                confirmBtn.innerText = "RESTORE CLEARANCE";
             }
+            
+            // Setup click execution pipeline loop
+            confirmBtn.onclick = executeToggledAction;
+            overlay.classList.add('active');
         }
 
+        function closeConfirmModal() {
+            document.getElementById('confirmModalOverlay').classList.remove('active');
+            currentModalContext = null;
+        }
+
+        function executeToggledAction() {
+            if (!currentModalContext) return;
+            
+            const { type, id, btn, name, isCurrentlyBlocked } = currentModalContext;
+            const dynamicRow = document.getElementById(`${type}-row-${id}`);
+            const nextStateBlocked = !isCurrentlyBlocked;
+            
+            btn.classList.toggle('btn-blocked');
+            if (nextStateBlocked) {
+                btn.innerHTML = type === 'admin' ? `<i class="fa-solid fa-user-plus"></i> RESTORE ACCESS` : `<i class="fa-solid fa-gavel"></i> LIFT BAN`;
+                if(dynamicRow) dynamicRow.classList.add('flagged-active');
+                showToast(`${name} restricted successfully.`, "info", "fa-user-slash");
+            } else {
+                btn.innerHTML = type === 'admin' ? `<i class="fa-solid fa-user-xmark"></i> SACK ADMIN` : `<i class="fa-solid fa-gavel"></i> BAN CONTESTANT`;
+                if(dynamicRow) dynamicRow.classList.remove('flagged-active');
+                showToast(`${name} database clearance completely restored.`, "success", "fa-user-check");
+            }
+            
+            updateSystem(`toggle_${type}`, { id: id, blocked: nextStateBlocked });
+            closeConfirmModal();
+        }
+
+        // ACTIVE DEPLOYMENT: Resolves live site identity text updates directly into the pipeline payload
         function updateAnnouncement() {
             const text = document.getElementById('announcement_text').value;
             updateSystem('site_announcement', text);
-            alert("Announcement updated across all nodes.");
+            showToast("Global header announcement broadcast live!", "success", "fa-bullhorn");
         }
     </script>
 </body>
